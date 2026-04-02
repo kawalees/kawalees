@@ -1,0 +1,215 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Kawalees API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: artists
+    description: Artist operations
+  - name: contact
+    description: Contact request operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /artists:
+    get:
+      operationId: getArtists
+      tags: [artists]
+      summary: Get all approved artists
+      description: Returns list of approved artists, optionally filtered
+      parameters:
+        - in: query
+          name: specialty
+          schema:
+            type: string
+          description: Filter by specialty
+        - in: query
+          name: country
+          schema:
+            type: string
+          description: Filter by country
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search by name
+        - in: query
+          name: featured
+          schema:
+            type: boolean
+          description: Filter featured artists only
+      responses:
+        "200":
+          description: List of artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Artist"
+
+  /artists/{id}:
+    get:
+      operationId: getArtistById
+      tags: [artists]
+      summary: Get artist by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Artist details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artist"
+        "404":
+          description: Artist not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /contact:
+    post:
+      operationId: submitContactRequest
+      tags: [contact]
+      summary: Submit a contact request for an artist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactRequest"
+      responses:
+        "201":
+          description: Contact request submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactRequestResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        specialty:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        experience:
+          type: string
+        bio:
+          type: string
+        education:
+          type: string
+        imageUrl:
+          type: string
+        portfolioLinks:
+          type: array
+          items:
+            type: string
+        works:
+          type: array
+          items:
+            type: string
+        featured:
+          type: boolean
+        workTypes:
+          type: string
+        languages:
+          type: string
+        dialects:
+          type: string
+      required:
+        - id
+        - name
+        - specialty
+        - country
+        - experience
+
+    ContactRequest:
+      type: object
+      properties:
+        artistId:
+          type: string
+        requesterName:
+          type: string
+        company:
+          type: string
+        projectType:
+          type: string
+        budget:
+          type: string
+        message:
+          type: string
+      required:
+        - artistId
+        - requesterName
+        - projectType
+        - message
+
+    ContactRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        id:
+          type: string
+      required:
+        - success
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message

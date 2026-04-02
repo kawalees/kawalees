@@ -1,0 +1,461 @@
+Improve my existing project "Kawalees" without rebuilding it from scratch.
+
+IMPORTANT RULES:
+- Do NOT delete or break existing working features.
+- Extend the current codebase.
+- Keep the structure modular and maintainable.
+- Make the app feel professional and production-ready.
+- Use Arabic RTL UI.
+- Make the design clean, modern, and responsive.
+
+==================================================
+PROJECT GOAL
+==================================================
+
+Build a professional creative platform called "Kawalees" with these combined phases:
+
+Phase 1:
+- User registration
+- Profile creation
+- Casting/projects
+- Applications
+- Search
+- Filters
+- Basic dashboard
+
+Phase 2:
+- Subscription plans
+- Artist packages
+- Company packages
+- Theatre group packages
+- Pricing page
+- Role-based access
+
+==================================================
+1) AUTHENTICATION SYSTEM
+==================================================
+
+Implement a full user authentication system.
+
+User roles:
+- artist
+- company
+- group
+- admin (optional for moderation)
+
+Required features:
+- Register
+- Login
+- Logout
+- Change password
+- Reset password
+- Update account settings
+
+Security:
+- Hash passwords securely
+- Validate input
+- Protect private routes
+- Do not allow profile creation without an authenticated user account
+
+Every profile must be linked to a real user account using user_id.
+
+==================================================
+2) PROFILE SYSTEM
+==================================================
+
+A user must first create an account, then create a profile.
+
+Rules:
+- No profile can exist without a user
+- Each profile is tied to user_id
+- One main profile per account
+
+Profile types:
+- artist profile
+- company profile
+- group profile
+
+Artist profile fields:
+- full name
+- profile image
+- bio
+- country of residence
+- city (optional)
+- specializations (multi-select)
+- work types (theatre, cinema, TV, ads)
+- languages
+- dialects
+- date of birth
+- age range (auto-calculated and shown as a range like 20–25)
+- gender
+- portfolio / works
+
+Company profile fields:
+- company name
+- logo/image
+- description
+- country
+- city
+- previous projects
+- company type
+
+Group profile fields:
+- group name
+- group image
+- description
+- members list
+- previous performances / projects
+
+Profile features:
+- Create profile after sign-up only
+- Edit profile
+- Update profile image
+- Public profile page
+- Preview profile before saving
+- Add placeholders in Arabic
+
+==================================================
+3) CASTING / PROJECT SYSTEM
+==================================================
+
+Only companies and groups can create projects.
+
+Project fields:
+- title
+- description
+- category
+- project type (normal / featured / urgent)
+- requirements
+- country
+- city
+- budget (optional)
+- deadline (optional)
+- status (open / closed / completed)
+
+Artists can:
+- view projects
+- search projects
+- apply to projects
+
+Applications:
+- artist_id
+- project_id
+- status (pending / accepted / rejected)
+- created_at
+
+Requirements:
+- Companies can view applicants for each project
+- Artists can only apply if their plan allows it
+- Only artists can apply
+- Only companies/groups can create projects
+
+==================================================
+4) SEARCH & FILTER
+==================================================
+
+Create a professional search system.
+
+Artist search:
+- search by name
+- filter by specialization
+- filter by country
+- filter by role
+- filter by gender
+- filter by age range
+
+Project search:
+- search by title
+- filter by category
+- filter by country
+- filter by type
+
+Frontend:
+- clean search input
+- dropdown filters
+- responsive filter panel
+- dynamic results
+- cards layout
+
+==================================================
+5) SUBSCRIPTION SYSTEM (NO PAYMENTS YET)
+==================================================
+
+Add subscription logic only for now, no payment integration yet.
+
+Plans:
+For artists:
+- free
+- pro
+- elite
+
+For companies:
+- basic
+- pro
+- premium
+
+For groups:
+- theatre_basic
+- theatre_pro
+
+Subscription logic:
+- Free artist users have limited applications
+- Pro and Elite users have more or unlimited access
+- Companies and groups get plan-based access to features
+- Show plan labels in dashboards and profiles
+
+Add a pricing page with full package details and pricing.
+
+==================================================
+6) PRICING PAGE / PACKAGES PAGE
+==================================================
+
+Create a dedicated page for all packages and pricing.
+
+Artists:
+- Free: free for one year only
+- Pro: 99 QAR / year
+- Elite: 249 QAR / year
+
+Companies:
+- Basic: 499 QAR / year
+- Pro: 999 QAR / year
+- Premium: 1999 QAR / year
+
+Theatre Groups:
+- Theatre Basic: 999 QAR / year
+- Theatre Pro: 1999 QAR / year
+
+The pricing page should include:
+- package name
+- price
+- key benefits
+- call-to-action button
+- featured package highlight
+- elegant comparison layout
+
+Add a professional note that the free artist plan is only valid for one year.
+
+==================================================
+7) DASHBOARD SYSTEM
+==================================================
+
+Artist dashboard:
+- my profile
+- edit profile
+- applied projects
+- plan status
+- change password
+- reset password option
+
+Company dashboard:
+- my profile
+- edit profile
+- created projects
+- applicants per project
+- plan status
+- change password
+
+Group dashboard:
+- group profile
+- edit profile
+- members
+- projects
+- plan status
+
+Admin dashboard (optional but recommended):
+- approve or reject profiles
+- manage users
+- manage projects
+- basic moderation
+
+==================================================
+8) ACCOUNT SETTINGS
+==================================================
+
+Add an account settings area with:
+- edit profile
+- change password
+- reset password
+- update email (optional)
+- delete account (optional)
+
+Users should be able to manage their account without breaking profile links.
+
+==================================================
+9) DATABASE DESIGN (POSTGRESQL)
+==================================================
+
+Use PostgreSQL and create tables similar to the following:
+
+users
+- id
+- email
+- password_hash
+- role
+- plan
+- created_at
+- updated_at
+
+profiles
+- id
+- user_id
+- profile_type
+- name
+- bio
+- country
+- city
+- image_url
+- created_at
+- updated_at
+
+artist_details
+- id
+- user_id
+- specializations
+- work_types
+- languages
+- dialects
+- birth_date
+- gender
+- age_range
+
+company_details
+- id
+- user_id
+- company_type
+- previous_projects
+- website (optional)
+
+group_details
+- id
+- user_id
+- members
+- previous_performances
+
+projects
+- id
+- owner_user_id
+- title
+- description
+- category
+- type
+- country
+- city
+- budget
+- deadline
+- status
+- created_at
+
+applications
+- id
+- project_id
+- artist_user_id
+- status
+- created_at
+
+subscriptions
+- id
+- user_id
+- plan
+- start_date
+- end_date
+- status
+
+Add any missing relational fields needed to keep the app consistent.
+
+==================================================
+10) UI / UX REQUIREMENTS
+==================================================
+
+Make the UI professional and polished:
+- Arabic RTL layout
+- modern typography
+- clean cards
+- soft shadows
+- elegant spacing
+- mobile responsive
+- clear navigation
+- attractive hero section
+- professional buttons
+- loading states
+- empty states
+- error states
+- success alerts
+
+Pages should include:
+- Home
+- Register
+- Login
+- Pricing
+- Profile creation
+- Artist directory
+- Project listings
+- Project details
+- Dashboard
+- Settings
+
+==================================================
+11) VALIDATION & SECURITY
+==================================================
+
+Add validation for:
+- email
+- password
+- required profile fields
+- project fields
+- application constraints
+
+Security:
+- hash passwords
+- protect routes
+- verify role-based permissions
+- prevent unauthorized profile creation
+- prevent unauthorized project posting
+- sanitize inputs
+
+==================================================
+12) PROFESSIONAL IMPROVEMENTS TO ADD
+==================================================
+
+Add anything missing that improves professionalism, such as:
+- role-based navigation
+- profile completeness indicator
+- featured profiles section
+- latest projects section
+- plan badges
+- better Arabic placeholders
+- structured forms
+- reusable components
+- clean route organization
+- separation of backend and frontend logic
+
+==================================================
+13) IMPLEMENTATION STYLE
+==================================================
+
+Please:
+- inspect the current code first
+- update only what is necessary
+- keep the project stable
+- organize code into modules/components/routes
+- avoid overcomplicating the MVP
+- make it ready for future expansion
+
+==================================================
+FINAL EXPECTATION
+==================================================
+
+After your changes, Kawalees should have:
+- user registration and login
+- profiles linked to accounts
+- artists, companies, and groups tied to user accounts
+- project posting and applications
+- search and filters
+- dashboards
+- change/reset password support
+- pricing page with packages
+- plan logic for subscriptions
+- professional UI
+- scalable structure
+
+Build it as a polished, professional platform.

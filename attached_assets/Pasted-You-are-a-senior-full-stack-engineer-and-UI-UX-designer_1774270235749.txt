@@ -1,0 +1,263 @@
+You are a senior full-stack engineer and UI/UX designer.
+
+Build a complete production-ready web platform called:
+
+"Kawalees" (Arabic: كواليس)
+
+========================
+🌍 PROJECT OVERVIEW
+========================
+
+Kawalees is a curated professional directory for theatre and art industry workers.
+
+The platform showcases artists WITHOUT exposing personal contact details.
+All communication must go through the platform.
+
+========================
+🎯 CORE IDEA
+========================
+
+- Artists submit their profiles via Google Forms
+- Data is stored in Google Sheets
+- Website fetches and displays approved profiles
+- Users can search, filter, and request contact
+- Admin controls visibility
+
+========================
+⚙️ TECH STACK
+========================
+
+Frontend:
+- HTML5 + CSS3 + Vanilla JS (or React if better structure)
+- Fully responsive
+- RTL support (Arabic first)
+
+Data:
+- Google Sheets as CMS
+- Use API like:
+  https://opensheet.elk.sh/{SHEET_ID}/Sheet1
+
+Deployment:
+- Static site compatible with GitHub Pages
+
+Optional:
+- Use lightweight backend (serverless) for contact form
+
+========================
+🎨 DESIGN SYSTEM
+========================
+
+Theme:
+- Dark mode ONLY
+
+Colors:
+- Background: #0b0b0b
+- Primary: Gold (#C8A96A)
+- Secondary: White
+- Accent: Deep red (optional)
+
+Typography:
+- Arabic modern font (Cairo / Tajawal)
+
+Style:
+- Minimal
+- Elegant
+- Cinematic (theatre-inspired)
+- Smooth hover animations
+- Card-based layout
+
+========================
+📄 PAGES STRUCTURE
+========================
+
+1. HOME PAGE (/index.html)
+
+Sections:
+- Hero:
+  Title: "كواليس"
+  Subtitle: "ما وراء المشهد"
+- Search bar (live search)
+- Filters:
+  - Specialty
+  - Country
+  - Experience
+- Featured artists slider
+- Artists grid
+
+2. ARTIST PAGE (/artist.html?id=)
+
+Display:
+- Image
+- Full name
+- Specialty
+- Country
+- Experience
+- Bio
+- Education
+- Portfolio gallery (images/videos)
+- Works list
+
+Button:
+[ طلب تواصل ]
+
+IMPORTANT:
+NO phone/email displayed
+
+3. CONTACT REQUEST PAGE (/contact.html)
+
+Form fields:
+- Name
+- Company
+- Project type
+- Budget
+- Message
+
+Store submissions in:
+- Google Sheets OR JSON endpoint
+
+========================
+🧠 DATA STRUCTURE (GOOGLE SHEET)
+========================
+
+Columns:
+
+id
+name
+specialty
+country
+city
+experience
+bio
+education
+image_url
+portfolio_links (comma separated)
+works (comma separated)
+approved (yes/no)
+featured (yes/no)
+
+ONLY show:
+approved = yes
+
+========================
+🔎 SEARCH & FILTER SYSTEM
+========================
+
+- Instant search (by name)
+- Filter by:
+  specialty
+  country
+  experience range
+
+- Combine filters dynamically
+- No page reload (client-side filtering)
+
+========================
+🧩 COMPONENTS
+========================
+
+- Navbar (logo + navigation)
+- Artist Card:
+  - Image
+  - Name
+  - Specialty
+  - Country
+- Modal / Toast notifications
+- Loader (while fetching data)
+
+========================
+⚡ PERFORMANCE
+========================
+
+- Lazy load images
+- Optimize images
+- Minify CSS/JS
+- Use CDN if needed
+
+========================
+🔐 SECURITY RULES
+========================
+
+- NEVER show contact details
+- Validate all form inputs
+- Add basic spam protection
+
+========================
+📁 FOLDER STRUCTURE
+========================
+
+/index.html
+/artist.html
+/contact.html
+/css/style.css
+/js/app.js
+/js/api.js
+/assets/images/
+/data/sample.json
+
+========================
+🔗 GOOGLE FORMS INTEGRATION
+========================
+
+Instructions must be included:
+
+1. Create Google Form with fields:
+   name, specialty, country, bio, experience, image_url, etc.
+
+2. Link to Google Sheet
+
+3. Use API:
+   https://opensheet.elk.sh/{sheet_id}/Sheet1
+
+4. Replace in code
+
+========================
+🚀 GITHUB DEPLOYMENT
+========================
+
+Provide steps:
+
+1. Create repo "kawalees"
+2. Upload files
+3. Enable GitHub Pages
+4. Use /root
+5. Done
+
+========================
+✨ BONUS FEATURES (IMPORTANT)
+========================
+
+- Featured artists section
+- Pagination OR infinite scroll
+- Smooth animations
+- URL-based routing (?id=)
+- Empty state (no results found)
+- Loading skeletons
+
+========================
+🧪 SAMPLE DATA
+========================
+
+Generate at least 6 artists with realistic data
+
+========================
+🎯 FINAL OUTPUT REQUIRED
+========================
+
+- Full working code
+- Clean UI
+- Comments in code
+- Ready to deploy
+- Easy to customize
+
+========================
+⚠️ IMPORTANT RULES
+========================
+
+- Code must be clean and modular
+- No unnecessary libraries
+- Must support Arabic RTL perfectly
+- Must work as static site
+
+========================
+END OF INSTRUCTIONS
+========================

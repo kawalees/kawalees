@@ -1,0 +1,222 @@
+You are a senior full-stack developer, UX designer, and legal-aware product builder.
+
+Update the "Join" page of a platform called:
+
+"Kawalees" (Arabic: كواليس)
+
+==================================
+🎯 OBJECTIVE
+==================================
+
+Build a professional artist registration form for theatre, cinema, and television workers.
+
+The form must:
+- Be well-structured
+- Support multiple specialties
+- Protect user privacy
+- Follow best practices aligned with Qatar data protection expectations
+
+==================================
+🧩 FORM STRUCTURE
+==================================
+
+Divide the form into sections:
+
+1. المعلومات الأساسية
+2. المعلومات الفنية
+3. البيانات الشخصية
+4. المهارات
+5. التواصل (خاص)
+6. الموافقة
+
+==================================
+🔹 BASIC INFORMATION
+==================================
+
+Fields:
+- الاسم الكامل (required)
+  Placeholder: مثال: اسم الفنان
+
+- الصورة الشخصية (required)
+  Hint: صورة واضحة بخلفية بسيطة
+
+- دولة الإقامة (replace "country")
+  Placeholder: مثال: قطر
+
+- المدينة (optional)
+  Placeholder: مثال: الدوحة
+
+==================================
+🔹 PROFESSIONAL INFORMATION
+==================================
+
+Specialties (MULTI-SELECT CHECKBOXES)
+
+Include comprehensive categories:
+
+الأداء:
+- ممثل (مسرح / سينما / تلفزيون)
+- ممثل صوت
+- راقص
+- مؤدي حركي
+
+الإخراج:
+- مخرج
+- مساعد مخرج
+
+التصميم:
+- سينوغراف
+- مصمم إضاءة
+- مصمم ديكور
+- مصمم أزياء
+
+الصوت والموسيقى:
+- مؤلف موسيقي
+- مهندس صوت
+
+الكتابة:
+- كاتب
+- دراماتورج
+
+الإنتاج:
+- منتج
+- مدير إنتاج
+- مدير مسرح
+
+التقنيات:
+- مصور
+- مونتير
+- فني مؤثرات بصرية
+
+Allow MULTIPLE selections.
+
+Work Types (MULTI-SELECT):
+- مسرح
+- سينما
+- تلفزيون
+- إعلانات
+
+Years of Experience (required)
+
+==================================
+🔹 PERSONAL DETAILS
+==================================
+
+- تاريخ الميلاد (required)
+  Note:
+  "🔒 يُستخدم فقط لحساب العمر التقريبي"
+
+- Gender (required)
+  - ذكر
+  - أنثى
+
+IMPORTANT:
+Do NOT display actual age.
+Calculate and display age range like:
+20–25
+
+==================================
+🔹 SKILLS
+==================================
+
+- اللغات
+  Placeholder: العربية، الإنجليزية
+
+- اللهجات
+  Placeholder: خليجية، مصرية، شامية
+
+==================================
+🔹 CONTACT (PRIVATE)
+==================================
+
+- رقم الهاتف (REQUIRED)
+
+Add note:
+"🔒 لن يتم عرض رقمك لأي مستخدم"
+
+==================================
+🔐 PRIVACY NOTICE (TOP OF PAGE)
+==================================
+
+Display:
+
+"🔒 خصوصيتك تهمنا
+جميع البيانات الشخصية (مثل رقم الهاتف وتاريخ الميلاد) محفوظة بشكل آمن ولن يتم عرضها في ملفك العام، وتُستخدم فقط لإدارة طلبات التواصل عبر منصة كواليس."
+
+==================================
+⚠️ ADD FIELD NOTES
+==================================
+
+- Phone:
+  "🔒 لن يتم عرض رقمك لأي مستخدم"
+
+- Date of Birth:
+  "🔒 يستخدم فقط لحساب العمر التقريبي"
+
+==================================
+📌 PRE-SUBMIT NOTICE
+==================================
+
+Display before submit button:
+
+"🔒 سيتم مراجعة طلبك قبل نشره ولن يتم عرض أي معلومات شخصية أو وسيلة تواصل مباشرة"
+
+==================================
+📜 LEGAL SECTION (IMPORTANT)
+==================================
+
+Add checkbox:
+
+☐ أوافق على شروط الاستخدام وسياسة الخصوصية
+
+----------------------------------
+TERMS OF USE (SUMMARY)
+----------------------------------
+
+- المنصة تعمل كوسيط لعرض الملفات الفنية فقط
+- لا يتم مشاركة بيانات التواصل بشكل مباشر
+- المستخدم مسؤول عن صحة البيانات
+- يحق للمنصة رفض أو حذف أي محتوى
+- يمنع استخدام المنصة لأغراض غير قانونية
+
+----------------------------------
+PRIVACY POLICY (QATAR-ALIGNED)
+----------------------------------
+
+- يتم جمع البيانات لأغراض تشغيل المنصة فقط
+- لا يتم بيع أو مشاركة البيانات مع أطراف خارجية
+- يتم حماية البيانات وفق أفضل الممارسات التقنية
+- يمكن للمستخدم طلب تعديل أو حذف بياناته
+- يتم استخدام البيانات بما يتوافق مع قوانين حماية الخصوصية في دولة قطر
+
+==================================
+🎨 UI/UX REQUIREMENTS
+==================================
+
+- Arabic RTL layout
+- Clean and minimal design
+- Dark theme (black + gold)
+- Clear spacing and sections
+- Mobile-friendly
+- Smooth user experience
+
+==================================
+⚙️ FUNCTIONAL REQUIREMENTS
+==================================
+
+- Validate all required fields
+- Support multi-select checkboxes
+- Organize specialties visually
+- Show success message after submission
+
+==================================
+📦 OUTPUT REQUIRED
+==================================
+
+- Full updated Join page code
+- Structured clean code
+- Ready to connect with backend
+
+==================================
+END
+==================================

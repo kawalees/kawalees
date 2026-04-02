@@ -1,0 +1,16 @@
+packages:
+  "framer-motion": "For smooth cinematic page transitions and element animations"
+  "react-hook-form": "For handling the contact request form"
+  "@hookform/resolvers": "For Zod validation integration with react-hook-form"
+  "embla-carousel-react": "For the featured artists horizontal slider"
+  "embla-carousel-autoplay": "For auto-playing the featured artists slider"
+
+images:
+  - path: "artifacts/kawalees/public/images/hero-bg.png"
+    description: "Dark cinematic theatrical stage background, very dark with subtle gold dust in the air and a faint warm spotlight from above, deep shadows, luxurious and mysterious atmosphere"
+    aspect_ratio: "16:9"
+
+notes:
+  - Application requires a strict RTL layout (Arabic)
+  - Data hooks are already generated in @workspace/api-client-react
+  - Force dark mode theme for all components

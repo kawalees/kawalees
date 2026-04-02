@@ -1,0 +1,183 @@
+Upgrade my Kawalees platform into a production-ready professional system.
+
+IMPORTANT:
+- Do NOT rebuild from scratch
+- Do NOT break existing features
+- Only improve, fix, and extend
+- Keep Arabic RTL design
+- Focus on UX, structure, and professionalism
+
+==================================================
+MAIN GOAL
+==================================================
+
+Transform the platform from MVP into a polished startup-level product.
+
+==================================================
+1) USER ACCOUNT SYSTEM (CRITICAL)
+==================================================
+
+Improve authentication:
+
+- Secure login/register
+- Change password
+- Reset password (email-based or basic)
+- Session handling
+
+Rules:
+- No profile without user account
+- Every profile linked to user_id
+
+Add account settings page:
+- edit profile
+- change password
+- reset password
+- delete account (optional)
+
+==================================================
+2) ONBOARDING FLOW (VERY IMPORTANT)
+==================================================
+
+After registration:
+
+- Ask user to choose role:
+  - Artist
+  - Company
+  - Group
+
+Then guide them:
+
+1. Create profile
+2. Complete profile
+3. Start using platform
+
+Add progress indicator.
+
+==================================================
+3) PROFILE SYSTEM (PROFESSIONAL)
+==================================================
+
+Improve:
+
+- profile completeness %
+- edit functionality
+- preview profile
+- clean UI
+
+Add:
+- missing fields validation
+- better layout
+
+==================================================
+4) DASHBOARD (REBUILD UX)
+==================================================
+
+Artist dashboard:
+- profile summary
+- applications
+- plan
+- quick actions
+
+Company dashboard:
+- projects
+- applicants
+- stats
+
+Group dashboard:
+- members
+- projects
+
+Make it clean and useful.
+
+==================================================
+5) PRICING PAGE (UPGRADE)
+==================================================
+
+Make it high-converting:
+
+- Highlight "Most Popular"
+- Add comparison table
+- Add CTA buttons:
+  - Subscribe
+  - Start free
+
+Show:
+- Free valid for 1 year only
+
+==================================================
+6) HOMEPAGE (STRONG LANDING)
+==================================================
+
+Add:
+
+- Hero section
+- clear value
+- strong CTA
+- how it works
+- features
+- trust section
+- featured content
+
+==================================================
+7) SEARCH & FILTER (UX)
+==================================================
+
+Improve:
+
+- UI
+- performance
+- results display
+
+==================================================
+8) TRUST SYSTEM (BASIC)
+==================================================
+
+Add:
+
+- ratings (simple)
+- verified badge (UI only)
+- trust indicators
+
+==================================================
+9) FEEDBACK SYSTEM
+==================================================
+
+Add:
+
+- loading states
+- success alerts
+- error messages
+- empty states
+
+==================================================
+10) UI/UX POLISH
+==================================================
+
+- consistent spacing
+- modern design
+- typography hierarchy
+- better buttons
+- responsive
+
+==================================================
+11) CODE STRUCTURE
+==================================================
+
+Refactor:
+
+- routes
+- controllers
+- services
+- components
+
+==================================================
+FINAL RESULT
+==================================================
+
+The app should feel like:
+
+- real startup product
+- easy to use
+- structured
+- professional
+- ready for beta launch

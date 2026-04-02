@@ -1,0 +1,175 @@
+Perform a full professional upgrade of my existing Kawalees platform.
+
+IMPORTANT:
+- Do NOT rebuild from scratch
+- Do NOT break existing features
+- Only improve, fix, and extend
+- Make it production-ready
+- Keep Arabic RTL UI
+
+==================================================
+MAIN GOAL
+==================================================
+
+Transform the project from a prototype into a professional startup-level platform.
+
+==================================================
+1) FIX USER FLOW (CRITICAL)
+==================================================
+
+Ensure a clear flow:
+
+1. User lands on homepage
+2. Understands platform
+3. Registers
+4. Creates profile
+5. Starts using platform
+
+Add guidance and onboarding steps.
+
+==================================================
+2) HOMEPAGE (LANDING PAGE)
+==================================================
+
+Rebuild homepage sections:
+
+- Hero (clear value + CTA)
+- How it works
+- User types
+- Features
+- Featured artists
+- Latest projects
+- Trust section
+- CTA to pricing
+
+Make it visually strong and modern.
+
+==================================================
+3) JOIN / REGISTRATION PAGE
+==================================================
+
+Improve form:
+
+- Multi-step form
+- Better grouping
+- Clear labels
+- Validation
+- Progress indicator
+- Professional placeholders
+
+==================================================
+4) PROFILE SYSTEM
+==================================================
+
+Ensure:
+
+- Profile linked to user account
+- Cannot create profile without account
+- Edit profile works properly
+- Profile page is clean and complete
+
+==================================================
+5) DASHBOARD (IMPORTANT)
+==================================================
+
+Create a real dashboard:
+
+Artist:
+- My profile
+- My applications
+- Plan info
+
+Company:
+- My projects
+- Applicants
+
+Add:
+- statistics
+- clean layout
+
+==================================================
+6) PRICING PAGE
+==================================================
+
+Make it professional:
+
+- Highlight "Most Popular"
+- Comparison table
+- Strong CTA buttons
+- Clear benefits
+- Show "Free for 1 year only"
+
+==================================================
+7) SEARCH & FILTER
+==================================================
+
+Improve:
+
+- Filters UI
+- Results display
+- Performance
+- UX
+
+==================================================
+8) ROLE-BASED EXPERIENCE
+==================================================
+
+Different UI for:
+- Artist
+- Company
+- Group
+
+==================================================
+9) TRUST SYSTEM (VERY IMPORTANT)
+==================================================
+
+Add basic:
+
+- rating system (simple)
+- profile badges
+- verified indicator (mock for now)
+
+==================================================
+10) FEEDBACK SYSTEM
+==================================================
+
+Add:
+
+- loading states
+- success messages
+- error messages
+- empty states
+
+==================================================
+11) UI/UX IMPROVEMENT
+==================================================
+
+- modern design
+- consistent spacing
+- typography hierarchy
+- better colors
+- cards
+- icons
+- responsive layout
+
+==================================================
+12) CODE STRUCTURE
+==================================================
+
+Refactor:
+
+- modular structure
+- clean routes
+- controllers
+- reusable components
+
+==================================================
+FINAL RESULT
+==================================================
+
+The platform should feel like:
+
+- a real startup product
+- clean and professional
+- easy to use
+- ready for beta launch
