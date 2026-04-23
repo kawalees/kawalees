@@ -11,7 +11,8 @@ import Cropper from "react-easy-crop";
 import "react-easy-crop/react-easy-crop.css";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
 
 // ─── Specialty Groups ──────────────────────────────────────────
 const SPECIALTY_GROUPS = [
@@ -394,7 +395,6 @@ function FieldNote({ icon: Icon = Lock, text }: { icon?: any; text: string }) {
 // ═══════════════════════════════════════════════════════════════
 export default function JoinAsArtist() {
   const { toast } = useToast();
-  const { user } = useAuth();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -460,8 +460,9 @@ export default function JoinAsArtist() {
     }
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${baseUrl}/api/artists/apply`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           name: name.trim(),
           specialty: selectedSpecialties.join("،"),
@@ -483,8 +484,7 @@ export default function JoinAsArtist() {
         }),
       });
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || "فشل الإرسال");
+        throw new Error("فشل الإرسال");
       }
       setIsSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -560,35 +560,18 @@ export default function JoinAsArtist() {
           </p>
         </div>
 
-        {/* Account link banner */}
-        {user ? (
-          <div className="mb-4 p-4 rounded-2xl bg-green-500/5 border border-green-500/20 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
-              <CheckCircle2 size={16} className="text-green-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-green-400 font-semibold text-sm">حسابك مرتبط بهذا الملف</p>
-              <p className="text-gray-500 text-xs">
-                سيُضاف هذا الملف لحساب <strong className="text-gray-300">{user.name}</strong> ({user.email})
-              </p>
-            </div>
+        {/* Info banner */}
+        <div className="mb-4 p-4 rounded-2xl bg-primary/5 border border-primary/20 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <CheckCircle2 size={16} className="text-primary" />
           </div>
-        ) : (
-          <div className="mb-4 p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/20 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
-              <Lock size={16} className="text-yellow-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-yellow-400 font-semibold text-sm">يُنصح بإنشاء حساب أولًا</p>
-              <p className="text-gray-500 text-xs">
-                أنشئ حسابًا لتتمكن من إدارة ملفك ومتابعة طلبات الكاستنج
-              </p>
-            </div>
-            <a href="/register" className="flex-shrink-0 text-xs px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors whitespace-nowrap">
-              إنشاء حساب
-            </a>
+          <div className="flex-1 min-w-0">
+            <p className="text-primary font-semibold text-sm">انضمامك مجاني تمامًا</p>
+            <p className="text-gray-500 text-xs">
+              بعد مراجعة طلبك سيُضاف ملفك للدليل خلال 3–5 أيام عمل
+            </p>
           </div>
-        )}
+        </div>
 
         {/* Privacy Banner */}
         <div className="mb-8 p-4 rounded-2xl bg-primary/5 border border-primary/15 flex gap-3">

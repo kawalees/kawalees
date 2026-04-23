@@ -1,101 +1,58 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { projects as allProjects } from "@/data/projects";
 import {
-  Clapperboard, Plus, Star, Calendar, Users,
-  Loader2, Lock, Search, Filter
+  Clapperboard, Star, MapPin, Search, Filter,
+  CheckCircle, XCircle, ChevronLeft
 } from "lucide-react";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  type: "normal" | "featured";
-  createdAt: string;
-  companyId: number;
-  companyName: string | null;
-  applicantCount: number;
-}
-
-function fetchProjects(): Promise<Project[]> {
-  return fetch("/api/projects").then((r) => {
-    if (!r.ok) throw new Error("فشل جلب المشاريع");
-    return r.json();
-  });
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("ar-SA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-const TYPE_LABELS: Record<string, string> = {
+const STATUS_LABELS: Record<string, string> = {
   all: "الكل",
-  normal: "عادي",
-  featured: "مميز",
+  open: "مفتوح",
+  closed: "مغلق",
 };
 
 export default function Projects() {
-  const { user } = useAuth();
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<"all" | "normal" | "featured">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("all");
+  const [typeFilter, setTypeFilter] = useState<string>("الكل");
 
-  const { data: projects, isLoading, error } = useQuery<Project[]>({
-    queryKey: ["/api/projects"],
-    queryFn: fetchProjects,
-  });
+  const types = useMemo(() => {
+    const ts = new Set(allProjects.map((p) => p.type));
+    return ["الكل", ...Array.from(ts)];
+  }, []);
 
   const filtered = useMemo(() => {
-    if (!projects) return [];
-    return projects.filter((p) => {
+    return allProjects.filter((p) => {
       const matchesSearch =
         !search ||
         p.title.toLowerCase().includes(search.toLowerCase()) ||
         p.description.toLowerCase().includes(search.toLowerCase()) ||
-        (p.companyName && p.companyName.toLowerCase().includes(search.toLowerCase()));
-      const matchesType = typeFilter === "all" || p.type === typeFilter;
-      return matchesSearch && matchesType;
+        (p.producer && p.producer.toLowerCase().includes(search.toLowerCase()));
+      const matchesStatus = statusFilter === "all" || p.status === statusFilter;
+      const matchesType = typeFilter === "الكل" || p.type === typeFilter;
+      return matchesSearch && matchesStatus && matchesType;
     });
-  }, [projects, search, typeFilter]);
+  }, [search, statusFilter, typeFilter]);
 
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-display text-3xl text-white mb-1">فرص الكاستنج</h1>
-            <p className="text-gray-400 text-sm">مشاريع مفتوحة للتقديم من فنانين وممثلين</p>
+        <div className="mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-4">
+            <Clapperboard size={13} className="text-primary" />
+            <span className="text-primary text-xs font-medium">الكاستنج المهني</span>
           </div>
-          {user?.type === "company" && (
-            <Link
-              href="/dashboard/company"
-              data-testid="link-post-project"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-background font-medium rounded-xl hover:bg-primary/90 transition-colors"
-            >
-              <Plus size={18} />
-              نشر مشروع
-            </Link>
-          )}
-          {!user && (
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary/40 text-primary font-medium rounded-xl hover:bg-primary/10 transition-colors"
-            >
-              انضم للتقديم
-            </Link>
-          )}
+          <h1 className="font-display text-4xl text-white mb-2">فرص الكاستنج</h1>
+          <p className="text-gray-400">مشاريع سينما ومسرح وتلفزيون تبحث عن مواهب عربية</p>
         </div>
 
-        {/* Search + Filter Row */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          {/* Search */}
-          <div className="relative flex-1">
+        {/* Search + Filters */}
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="relative">
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <Search size={16} className="text-gray-500" />
             </div>
@@ -105,103 +62,109 @@ export default function Projects() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث عن مشروع أو جهة إنتاج..."
-              className="w-full pr-10 pl-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all"
+              className="w-full pr-10 pl-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all"
             />
           </div>
 
-          {/* Type filter */}
-          <div className="flex items-center gap-2">
-            <Filter size={15} className="text-gray-400 flex-shrink-0" />
-            <div className="flex gap-1.5">
-              {(["all", "normal", "featured"] as const).map((t) => (
-                <button
-                  key={t}
-                  data-testid={`filter-type-${t}`}
-                  onClick={() => setTypeFilter(t)}
-                  className={`px-3.5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                    typeFilter === t
-                      ? t === "featured"
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex items-center gap-2">
+              <Filter size={14} className="text-gray-400" />
+              <span className="text-gray-400 text-xs">الحالة:</span>
+            </div>
+            {(["all", "open", "closed"] as const).map((s) => (
+              <button
+                key={s}
+                data-testid={`filter-status-${s}`}
+                onClick={() => setStatusFilter(s)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  statusFilter === s
+                    ? s === "open" ? "bg-green-500/20 text-green-400 border border-green-500/40"
+                      : s === "closed" ? "bg-red-500/20 text-red-400 border border-red-500/40"
+                      : "bg-white/15 text-white border border-white/20"
+                    : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"
+                }`}
+              >
+                {s === "open" && <CheckCircle size={11} />}
+                {s === "closed" && <XCircle size={11} />}
+                {STATUS_LABELS[s]}
+              </button>
+            ))}
+
+            <div className="flex items-center gap-2 mr-2">
+              <span className="text-gray-400 text-xs">النوع:</span>
+              <div className="flex gap-1.5 flex-wrap">
+                {types.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTypeFilter(t)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      typeFilter === t
                         ? "bg-primary/20 text-primary border border-primary/40"
-                        : "bg-white/15 text-white border border-white/20"
-                      : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"
-                  }`}
-                >
-                  {t === "featured" && <Star size={12} className="inline ml-1" fill="currentColor" />}
-                  {TYPE_LABELS[t]}
-                </button>
-              ))}
+                        : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Results count */}
-        {!isLoading && !error && projects && (
-          <p className="text-xs text-gray-500 mb-5">
-            {filtered.length === projects.length
-              ? `${projects.length} مشروع`
-              : `${filtered.length} من ${projects.length} مشروع`}
-          </p>
-        )}
+        {/* Count */}
+        <p className="text-xs text-gray-500 mb-6">
+          {filtered.length === allProjects.length
+            ? `${allProjects.length} مشروع`
+            : `${filtered.length} من ${allProjects.length} مشروع`}
+        </p>
 
-        {/* Loading */}
-        {isLoading && (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={36} />
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="text-center py-20 text-gray-400">
-            <p>تعذّر تحميل المشاريع. حاول مرة أخرى.</p>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!isLoading && !error && filtered.length === 0 && (
+        {/* Empty */}
+        {filtered.length === 0 && (
           <div className="text-center py-20 border border-dashed border-white/10 rounded-2xl">
             <Clapperboard className="mx-auto text-gray-600 mb-4" size={48} />
-            {projects?.length === 0 ? (
-              <>
-                <p className="text-gray-400 text-lg mb-2">لا توجد مشاريع حاليًا</p>
-                {user?.type === "company" && (
-                  <p className="text-gray-500 text-sm">كن أول من ينشر فرصة كاستنج!</p>
-                )}
-              </>
-            ) : (
-              <>
-                <p className="text-gray-400 text-lg mb-2">لا توجد نتائج مطابقة</p>
-                <button
-                  onClick={() => { setSearch(""); setTypeFilter("all"); }}
-                  className="mt-2 text-sm text-primary hover:text-primary/80 transition-colors"
-                >
-                  مسح الفلاتر
-                </button>
-              </>
-            )}
+            <p className="text-gray-400 text-lg mb-2">لا توجد نتائج مطابقة</p>
+            <button
+              onClick={() => { setSearch(""); setStatusFilter("all"); setTypeFilter("الكل"); }}
+              className="mt-2 text-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              مسح الفلاتر
+            </button>
           </div>
         )}
 
-        {/* Project grid */}
+        {/* Grid */}
         {filtered.length > 0 && (
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {filtered.map((project) => (
               <Link key={project.id} href={`/projects/${project.id}`}>
                 <div
                   data-testid={`card-project-${project.id}`}
                   className={`group relative bg-white/5 border rounded-2xl p-6 hover:bg-white/8 transition-all cursor-pointer ${
-                    project.type === "featured"
-                      ? "border-primary/40 shadow-md shadow-primary/10"
+                    project.featured
+                      ? "border-primary/30 shadow-md shadow-primary/10"
                       : "border-white/10 hover:border-white/20"
                   }`}
                 >
-                  {/* Featured badge */}
-                  {project.type === "featured" && (
-                    <span className="absolute top-4 left-4 flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-full">
-                      <Star size={11} fill="currentColor" />
-                      مميز
+                  {/* Status + Featured badge */}
+                  <div className="flex items-center gap-2 mb-4">
+                    {project.featured && (
+                      <span className="flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-full">
+                        <Star size={10} fill="currentColor" />
+                        مميز
+                      </span>
+                    )}
+                    <span className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
+                      project.status === "open"
+                        ? "bg-green-500/10 text-green-400 border-green-500/30"
+                        : "bg-gray-500/10 text-gray-400 border-gray-500/30"
+                    }`}>
+                      {project.status === "open" ? <CheckCircle size={10} /> : <XCircle size={10} />}
+                      {project.status === "open" ? "مفتوح للتقديم" : "انتهى التقديم"}
                     </span>
-                  )}
+                    <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+                      {project.type}
+                    </span>
+                  </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                     <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
@@ -209,37 +172,30 @@ export default function Projects() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-display text-lg text-white group-hover:text-primary transition-colors truncate">
+                      <h2 className="font-display text-lg text-white group-hover:text-primary transition-colors mb-1">
                         {project.title}
                       </h2>
-                      <p className="text-sm text-gray-400 mt-1 line-clamp-2">{project.description}</p>
+                      <p className="text-sm text-gray-400 line-clamp-2 mb-3">{project.description}</p>
 
-                      <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-500">
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                         <span className="flex items-center gap-1">
-                          <Users size={12} />
-                          {project.companyName ?? "جهة إنتاج"}
+                          <MapPin size={11} />
+                          {project.location}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar size={12} />
-                          {formatDate(project.createdAt)}
-                        </span>
-                        <span className="flex items-center gap-1 text-gray-500">
-                          <Users size={12} className="text-primary/60" />
-                          {project.applicantCount} متقدم
-                        </span>
-                        {user?.type === "artist" && (
-                          <span className="flex items-center gap-1 text-primary mr-auto">
-                            تقدّم الآن ←
+                        {project.producer && (
+                          <span className="flex items-center gap-1">
+                            {project.producer}
                           </span>
                         )}
-                        {!user && (
-                          <span className="flex items-center gap-1">
-                            <Lock size={11} />
-                            سجّل دخولك للتقديم
+                        {project.deadline && (
+                          <span>
+                            آخر موعد: {new Date(project.deadline).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
                           </span>
                         )}
                       </div>
                     </div>
+
+                    <ChevronLeft size={18} className="text-gray-600 group-hover:text-primary transition-colors flex-shrink-0 self-center" />
                   </div>
                 </div>
               </Link>

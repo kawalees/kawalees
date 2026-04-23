@@ -6,85 +6,37 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 
 ## Kawalees (كواليس)
 
-A curated professional directory and casting MVP platform for theatre, cinema, and arts. Dark cinematic design with Arabic RTL support and gold (#C8A96A) accents.
+A fully **static** Arabic professional talent directory and casting platform for theater, cinema, and arts. Dark cinematic design with Arabic RTL support and gold (#C8A96A) accents. **GitHub Pages compatible — no backend required.**
 
-### Features
+### Architecture: Fully Static
 
-#### Directory (Original)
-- Artist directory with search, filter (specialty, country, experience), and pagination
-- Artist profile pages (privacy-first — no contact details shown publicly)
-- Contact request form (stored in DB)
-- Featured artists carousel
-- Artist self-registration with pending approval workflow
-- Admin panel to review, approve, or reject artist applications
-- 6 sample Arabic artists pre-seeded
+- **No auth, no backend API calls** from the frontend
+- **Static data** in `src/data/artists.ts` (12 artists) and `src/data/projects.ts` (8 projects)
+- **Forms** submit to Formspree (`https://formspree.io/f/xpwznoel`)
+- All pages use local static data — works on GitHub Pages
 
-#### Casting MVP (Phase 1 Complete)
-- **User Authentication**: JWT-based auth (bcryptjs + jsonwebtoken). Token stored in localStorage.
-- **User Types**: `artist` (فنان) and `company` (شركة / جهة إنتاج)
-- **Subscription Plans**: `free` (3 applications max), `pro` (unlimited), `elite` (unlimited)
-- **Projects**: Companies create casting calls (normal or featured). `GET /api/projects` returns applicant count per project and supports `?search=` and `?type=` query params.
-- **Applications**: Artists apply to projects with an optional message. Plan limit enforced server-side (returns `plan_limit` error when exceeded).
-- **Dashboards**: Separate artist and company dashboards. Artist dashboard shows plan usage with a visual progress bar and remaining count. Company dashboard shows project list with expandable applicant cards (name, email, plan, message).
-- **Search & Filter**:
-  - Home page: text search + specialty filter tabs + country dropdown (from live artist data)
-  - Projects page: text search + type filter tabs (الكل / عادي / مميز) + applicant counts on cards
-- **Auth-aware navigation**: Shows login/register or user menu depending on auth state
+### Static Data Files
+- `src/types/index.ts` — `Artist` and `Project` TypeScript interfaces
+- `src/data/artists.ts` — 12 mock Arabic artists across 10 Arab countries
+- `src/data/projects.ts` — 8 casting projects (6 open, 2 closed)
 
-### UI Upgrades (Professional Launch Upgrade)
-- **Homepage**: Added hero badge, dual CTAs, "How it works" 3-step section, Stats band, "Who is it for" user-type cards, Trust section, CTA to pricing — all hidden during active search/filter
-- **Artist Card**: Added "موثّق" (verified) badge on all approved artists
-- **Artist Profile**: Added verified badge, `StarRating` component with mock rating from experience level
-- **Pricing Page**: Added collapsible feature comparison table for artist plans
-- **Register Page**: Converted to 2-step form (step 1: choose account type with descriptions; step 2: enter details) with visual progress indicator
+### Active Pages
+- `/` — Home: hero, search/filter, featured carousel, artist grid (from static data)
+- `/artist/:id` — Full artist profile (from static artists array)
+- `/projects` — Casting opportunities with status/type filters
+- `/projects/:id` — Project detail + Formspree apply form
+- `/join` — Artist join form → Formspree
+- `/contact` — Contact request form with artist dropdown → Formspree
 
-### Pages
-- `/` - Home: hero, search, filters, featured carousel, artist grid
-- `/artist/:id` - Artist profile
-- `/contact` - Contact request form
-- `/join` - Artist registration form (pending until admin approves)
-- `/admin` - Admin panel (protected by ADMIN_KEY env var)
-- `/login` - Login page (JWT auth)
-- `/register` - Register page (artist or company type)
-- `/projects` - Public listing of all casting projects
-- `/projects/:id` - Project detail + apply button (artists only)
-- `/dashboard/artist` - Artist dashboard: my applications + plan usage
-- `/dashboard/company` - Company dashboard: my projects + applicants
+### Removed/Orphaned Pages (not in routes)
+- Login, Register, Onboarding, Pricing, AdminPanel, ArtistDashboard, CompanyDashboard, Settings — files remain but not imported or routed
 
-### API — Original
-- `GET /api/artists` — list artists (filterable by specialty, country)
-- `GET /api/artists/:id` — artist profile
-- `POST /api/contact` — contact request
-- `POST /api/artists/apply` — artist self-registration
-- `GET /api/admin/applications` — list pending applications (admin key required)
-- `PATCH /api/admin/applications/:id/approve` — approve artist
-- `DELETE /api/admin/applications/:id` — reject/delete application
-
-### API — Casting MVP (New)
-- `POST /api/auth/register` — register user (email, password, name, type)
-- `POST /api/auth/login` — login, returns JWT
-- `GET /api/auth/me` — verify token + get current user
-- `GET /api/projects` — public project listing
-- `GET /api/projects/:id` — project detail with applicant count
-- `POST /api/projects` — create project (company only, requires Bearer token)
-- `DELETE /api/projects/:id` — delete own project (company only)
-- `POST /api/projects/:id/apply` — apply to project (artist only, plan limits enforced)
-- `GET /api/projects/:id/applicants` — view applicants (project owner company only)
-- `GET /api/dashboard` — returns artist or company dashboard data based on JWT type
-
-### DB Tables
-- `artists` — public artist profiles (approved/unapproved)
-- `contact_requests` — contact form submissions
-- `users` — auth accounts (email, password_hash, type, plan)
-- `projects` — casting calls posted by companies
-- `applications` — artist applications to projects
-
-### Auth Notes
-- Admin routes require `x-admin-key` header matching `ADMIN_KEY` env var
-- Casting routes use `Authorization: Bearer <JWT>` header
-- JWT secret: `SESSION_SECRET` env var (falls back to dev default)
-- DB tables: `artists` (with `email`, `phone`, `approved` fields), `contact_requests`
-- Seed script: `pnpm --filter @workspace/scripts run seed-artists`
+### Design
+- Dark cinematic, RTL Arabic, gold primary `#C8A96A`
+- `font-display`: Playfair or similar serif for headings
+- `glass-panel` class for form containers
+- `text-gradient-gold` for gold gradient text
+- Framer Motion animations, Embla Carousel for featured artists
 
 ## Stack
 

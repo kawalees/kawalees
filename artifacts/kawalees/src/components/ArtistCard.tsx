@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { MapPin, Star, ShieldCheck } from "lucide-react";
-import type { Artist } from "@workspace/api-client-react";
+import type { Artist } from "@/types";
 
 export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isFeatured?: boolean }) {
   const primarySpecialty = artist.specialty.split(/[,،]/)[0]?.trim() ?? "";
@@ -35,7 +35,6 @@ export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isF
                 مميز
               </span>
             )}
-            {/* Verified badge for all approved artists */}
             <span className="mr-auto bg-black/50 text-primary px-2 py-0.5 text-xs font-medium rounded-full flex items-center gap-1 backdrop-blur-sm border border-primary/30">
               <ShieldCheck size={10} className="fill-primary/20" />
               موثّق

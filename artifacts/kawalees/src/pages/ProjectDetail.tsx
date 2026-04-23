@@ -1,242 +1,251 @@
 import { useState } from "react";
-import { useParams, useLocation } from "wouter";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams, Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { projects } from "@/data/projects";
 import {
-  Clapperboard, Star, Calendar, Building2, Users,
-  Loader2, Send, Lock, ArrowRight, CheckCircle
+  Clapperboard, Star, MapPin, Calendar, Send,
+  ArrowRight, CheckCircle, XCircle, Users, Loader2, CheckCircle2
 } from "lucide-react";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  type: "normal" | "featured";
-  createdAt: string;
-  companyId: number;
-  companyName: string | null;
-  applicantCount: number;
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("ar-SA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user, token } = useAuth();
-  const { toast } = useToast();
-  const [, navigate] = useLocation();
-  const queryClient = useQueryClient();
+  const project = projects.find((p) => p.id === id);
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
-  const [applied, setApplied] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const { data: project, isLoading } = useQuery<Project>({
-    queryKey: ["/api/projects", id],
-    queryFn: () =>
-      fetch(`/api/projects/${id}`).then((r) => {
-        if (!r.ok) throw new Error("المشروع غير موجود");
-        return r.json();
-      }),
-    enabled: !!id,
-  });
-
-  const applyMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/projects/${id}/apply`, {
+  const handleApply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          projectId: project?.id,
+          projectTitle: project?.title,
+          name,
+          email,
+          role,
+          message,
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message ?? "فشل إرسال الطلب");
-      return data;
-    },
-    onSuccess: () => {
-      setApplied(true);
-      queryClient.invalidateQueries({ queryKey: ["/api/projects", id] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
-      toast({ title: "تم التقديم!", description: "تم إرسال طلبك بنجاح" });
-    },
-    onError: (err: Error) => {
-      if (err.message.includes("plan_limit") || err.message.includes("الحد الأقصى")) {
-        toast({
-          title: "حد الخطة المجانية",
-          description: err.message,
-          variant: "destructive",
-        });
-      } else if (err.message.includes("تقدمت")) {
-        toast({ title: "سبق التقديم", description: err.message, variant: "destructive" });
-        setApplied(true);
+      if (res.ok) {
+        setSubmitted(true);
       } else {
-        toast({ title: "خطأ", description: err.message, variant: "destructive" });
+        setError("فشل الإرسال. يرجى المحاولة مجددًا.");
       }
-    },
-  });
+    } catch {
+      setError("حدث خطأ. تحقق من اتصالك بالإنترنت وحاول مجددًا.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!project) {
+    return (
+      <AppLayout>
+        <div className="max-w-3xl mx-auto px-4 pt-32 pb-16 text-center">
+          <Clapperboard className="mx-auto text-gray-600 mb-4" size={48} />
+          <h1 className="font-display text-3xl text-white mb-4">المشروع غير موجود</h1>
+          <Link href="/projects" className="text-primary hover:text-primary/80 transition-colors">
+            العودة لفرص الكاستنج
+          </Link>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+
         {/* Back */}
-        <button
-          onClick={() => navigate("/projects")}
-          className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 text-sm"
+        <Link
+          href="/projects"
+          className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 text-sm group"
         >
-          <ArrowRight size={16} />
+          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           العودة للمشاريع
-        </button>
+        </Link>
 
-        {isLoading && (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={36} />
-          </div>
-        )}
+        {/* Status + Type badges */}
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {project.featured && (
+            <span className="flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-full">
+              <Star size={10} fill="currentColor" />
+              مميز
+            </span>
+          )}
+          <span className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
+            project.status === "open"
+              ? "bg-green-500/10 text-green-400 border-green-500/30"
+              : "bg-gray-500/10 text-gray-400 border-gray-500/30"
+          }`}>
+            {project.status === "open" ? <CheckCircle size={10} /> : <XCircle size={10} />}
+            {project.status === "open" ? "مفتوح للتقديم" : "انتهى التقديم"}
+          </span>
+          <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+            {project.type}
+          </span>
+        </div>
 
-        {!isLoading && !project && (
-          <div className="text-center py-20 text-gray-400">المشروع غير موجود</div>
-        )}
-
-        {project && (
-          <>
-            {/* Project card */}
-            <div
-              className={`bg-white/5 border rounded-2xl p-8 mb-6 ${
-                project.type === "featured"
-                  ? "border-primary/40 shadow-lg shadow-primary/10"
-                  : "border-white/10"
-              }`}
-            >
-              <div className="flex items-start gap-4 mb-6">
-                <div className="flex-shrink-0 w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-                  <Clapperboard className="text-primary" size={26} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h1 className="font-display text-2xl text-white">{project.title}</h1>
-                    {project.type === "featured" && (
-                      <span className="flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-full">
-                        <Star size={11} fill="currentColor" />
-                        مميز
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
-                    <span className="flex items-center gap-1.5">
-                      <Building2 size={14} />
-                      {project.companyName ?? "جهة إنتاج"}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={14} />
-                      {formatDate(project.createdAt)}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Users size={14} />
-                      {project.applicantCount} متقدم
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-gray-300 leading-relaxed whitespace-pre-line">{project.description}</p>
+        {/* Project card */}
+        <div className={`bg-white/5 border rounded-2xl p-8 mb-8 ${
+          project.featured ? "border-primary/30 shadow-lg shadow-primary/10" : "border-white/10"
+        }`}>
+          <div className="flex items-start gap-4 mb-6">
+            <div className="flex-shrink-0 w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+              <Clapperboard className="text-primary" size={26} />
             </div>
+            <div className="flex-1">
+              <h1 className="font-display text-2xl text-white mb-3">{project.title}</h1>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+                <span className="flex items-center gap-1.5">
+                  <MapPin size={14} />
+                  {project.location}
+                </span>
+                {project.producer && (
+                  <span className="flex items-center gap-1.5">
+                    <Users size={14} />
+                    {project.producer}
+                  </span>
+                )}
+                {project.deadline && (
+                  <span className="flex items-center gap-1.5">
+                    <Calendar size={14} />
+                    {new Date(project.deadline).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
 
-            {/* Apply section */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-              {/* Not logged in */}
-              {!user && (
-                <div className="text-center py-4">
-                  <Lock className="mx-auto text-gray-500 mb-3" size={32} />
-                  <p className="text-gray-300 mb-4">يجب تسجيل الدخول كفنان للتقديم على هذا المشروع</p>
-                  <div className="flex gap-3 justify-center flex-wrap">
-                    <button
-                      onClick={() => navigate("/login")}
-                      className="px-6 py-2.5 bg-primary text-background font-medium rounded-xl hover:bg-primary/90 transition-colors"
-                    >
-                      تسجيل الدخول
-                    </button>
-                    <button
-                      onClick={() => navigate("/register")}
-                      className="px-6 py-2.5 border border-white/20 text-gray-300 font-medium rounded-xl hover:border-primary/40 transition-colors"
-                    >
-                      إنشاء حساب
-                    </button>
+          <p className="text-gray-300 leading-relaxed whitespace-pre-line mb-6">{project.description}</p>
+
+          {project.roles.length > 0 && (
+            <div>
+              <h2 className="font-display text-lg text-white mb-3 flex items-center gap-2">
+                <span className="w-1 h-5 bg-primary rounded-full" />
+                الأدوار المطلوبة
+              </h2>
+              <ul className="space-y-2">
+                {project.roles.map((role, i) => (
+                  <li key={i} className="flex items-start gap-3 text-gray-300 text-sm">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    {role}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Apply section */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+          {project.status === "closed" ? (
+            <div className="text-center py-4">
+              <XCircle className="mx-auto text-gray-500 mb-3" size={36} />
+              <p className="text-gray-300 text-lg font-display mb-1">انتهى باب التقديم</p>
+              <p className="text-gray-500 text-sm">لا يمكن التقديم على هذا المشروع حاليًا.</p>
+              <Link
+                href="/projects"
+                className="mt-4 inline-block text-primary text-sm hover:text-primary/80 transition-colors"
+              >
+                تصفّح فرص أخرى
+              </Link>
+            </div>
+          ) : submitted ? (
+            <div className="flex flex-col items-center py-6 text-center">
+              <CheckCircle2 className="text-green-400 mb-3" size={48} />
+              <p className="text-white font-display text-xl mb-1">تم إرسال طلبك بنجاح!</p>
+              <p className="text-gray-400 text-sm mb-4">ستتواصل معك جهة الإنتاج قريبًا على البريد الإلكتروني المذكور.</p>
+              <Link href="/projects" className="text-primary text-sm hover:text-primary/80 transition-colors">
+                العودة للمشاريع
+              </Link>
+            </div>
+          ) : (
+            <>
+              <h2 className="font-display text-xl text-white mb-6">التقديم على المشروع</h2>
+              <form onSubmit={handleApply} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">اسمك الكامل *</label>
+                    <input
+                      data-testid="input-apply-name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="محمد عبدالله"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">البريد الإلكتروني *</label>
+                    <input
+                      data-testid="input-apply-email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                    />
                   </div>
                 </div>
-              )}
 
-              {/* Company viewing */}
-              {user?.type === "company" && (
-                <div className="text-center py-4 text-gray-400">
-                  <p>حسابات الشركات لا تتقدم للمشاريع</p>
-                  <button
-                    onClick={() => navigate("/dashboard/company")}
-                    className="mt-3 text-primary hover:text-primary/80 text-sm transition-colors"
-                  >
-                    الانتقال للوحة التحكم
-                  </button>
-                </div>
-              )}
+                {project.roles.length > 0 && (
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">الدور المطلوب</label>
+                    <select
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-all text-sm appearance-none"
+                    >
+                      <option value="" className="bg-zinc-900">-- اختر الدور (اختياري) --</option>
+                      {project.roles.map((r, i) => (
+                        <option key={i} value={r} className="bg-zinc-900">{r}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-              {/* Artist applying */}
-              {user?.type === "artist" && !applied && (
-                <>
-                  <h2 className="font-display text-lg text-white mb-4">التقديم على المشروع</h2>
-                  {user.plan === "free" && (
-                    <div className="mb-4 px-4 py-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-xs text-yellow-400">
-                      الخطة المجانية تتيح لك 3 طلبات فقط. قم بالترقية للوصول الكامل.
-                    </div>
-                  )}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">رسالتك (اختياري)</label>
                   <textarea
                     data-testid="input-apply-message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={4}
-                    placeholder="اكتب رسالة مختصرة تعرّف فيها بنفسك وخبراتك (اختياري)"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all resize-none text-sm mb-4"
+                    placeholder="عرّف بنفسك وخبراتك بإيجاز..."
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all resize-none text-sm"
                   />
-                  <button
-                    data-testid="button-apply"
-                    onClick={() => applyMutation.mutate()}
-                    disabled={applyMutation.isPending}
-                    className="flex items-center gap-2 px-6 py-3 bg-primary text-background font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-60"
-                  >
-                    {applyMutation.isPending ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : (
-                      <Send size={18} />
-                    )}
-                    إرسال طلب التقديم
-                  </button>
-                </>
-              )}
-
-              {/* Applied successfully */}
-              {user?.type === "artist" && applied && (
-                <div className="flex flex-col items-center py-4 text-center">
-                  <CheckCircle className="text-green-400 mb-3" size={40} />
-                  <p className="text-white font-medium mb-1">تم إرسال طلبك بنجاح!</p>
-                  <p className="text-gray-400 text-sm mb-4">ستتواصل معك جهة الإنتاج قريبًا</p>
-                  <button
-                    onClick={() => navigate("/dashboard/artist")}
-                    className="text-primary text-sm hover:text-primary/80 transition-colors"
-                  >
-                    عرض طلباتي
-                  </button>
                 </div>
-              )}
-            </div>
-          </>
-        )}
+
+                {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                <button
+                  data-testid="button-apply"
+                  type="submit"
+                  disabled={submitting}
+                  className="flex items-center gap-2 px-6 py-3 bg-primary text-background font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-60"
+                >
+                  {submitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                  إرسال طلب التقديم
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </AppLayout>
   );

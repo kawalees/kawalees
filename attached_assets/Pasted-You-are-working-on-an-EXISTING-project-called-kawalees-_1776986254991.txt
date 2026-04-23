@@ -1,0 +1,317 @@
+You are working on an EXISTING project called "kawalees".
+
+IMPORTANT:
+- Do NOT create a new project
+- Modify the existing project only
+- Do NOT delete existing code
+- You may refactor and improve code when beneficial
+- Only disable or hide unused features (do not remove them)
+- Preserve the current design, layout, and Arabic RTL language
+- Keep the visual identity as is
+- Improve UI/UX only if it enhances clarity, usability, and professionalism
+
+The final result must be fully static and compatible with GitHub Pages.
+
+==================================================
+CORE GOAL
+==================================================
+
+Transform the platform into a professional, static-ready artist platform that includes:
+
+- Artist directory (profiles)
+- Casting system (projects page)
+- Join system (advanced professional form)
+- Contact system
+
+==================================================
+STRICT RULES
+==================================================
+
+- NO login system
+- NO authentication logic
+- NO companies
+- NO pricing or subscriptions
+- NO dashboards
+- NO backend
+- NO database
+
+==================================================
+WHAT TO KEEP
+==================================================
+
+Keep and enhance:
+
+- Home page
+- ArtistProfile page
+- JoinAsArtist page
+- ContactRequest system
+- Projects.tsx (casting page)
+- ProjectDetail.tsx
+- Existing UI components
+- Current layout and styling
+
+==================================================
+WHAT TO DISABLE (DO NOT DELETE)
+==================================================
+
+Disable from UI, routing, and logic:
+
+- Login.tsx
+- Register.tsx
+- Onboarding.tsx
+- Pricing.tsx
+- AdminPanel.tsx
+- ArtistDashboard.tsx
+- CompanyDashboard.tsx
+- Settings.tsx
+
+Remove:
+- routes
+- navigation links
+- auth logic
+
+==================================================
+DATA SYSTEM (STATIC)
+==================================================
+
+Replace all API calls with local mock data.
+
+Create:
+
+- src/data/artists.ts
+- src/data/projects.ts
+
+Artists include:
+- id
+- name
+- image
+- country
+- city
+- specializations
+- bio
+- skills
+- languages
+- dialects
+
+Projects include:
+- id
+- title
+- type
+- location
+- description
+- roles
+- status (open / closed)
+
+==================================================
+CASTING SYSTEM (PROJECTS PAGE)
+==================================================
+
+The "Projects" page is the casting page.
+
+It must visually match the artists page.
+
+Use:
+- grid layout
+- cards
+- filters
+- search
+
+Each project card shows:
+- title
+- type
+- location
+- status
+
+==================================================
+PROJECT DETAILS
+==================================================
+
+Show:
+- description
+- roles
+- location
+
+If open:
+- show "تقدّم الآن"
+
+If closed:
+- show "انتهى التقديم"
+
+==================================================
+APPLY SYSTEM
+==================================================
+
+On click "تقدّم الآن":
+
+Open form (modal or page):
+
+Fields:
+- name
+- email
+- message
+- portfolio link (optional)
+
+Send via Formspree:
+https://formspree.io/f/maqaoqeo
+
+Include project title in submission.
+
+No accounts.
+No tracking.
+
+==================================================
+JOIN SYSTEM (ADVANCED PROFESSIONAL FORM)
+==================================================
+
+Build a full multi-section professional form.
+
+Do NOT simplify.
+
+Sections:
+
+1) Introduction + privacy explanation
+
+2) Basic Information:
+- profile image (required)
+- full name (required)
+- nationality (required)
+- country (required)
+- birth date (required)
+- gender (required)
+
+3) Professional Information:
+- specialization selection (multi-select REQUIRED)
+
+==================================================
+SPECIALIZATION SYSTEM (ADVANCED)
+==================================================
+
+- grouped categories
+- searchable
+- multi-select
+- clean UI
+- scalable (no hard limits)
+
+Categories include:
+
+1) التمثيل والأداء
+2) الإعلام والإذاعة والتلفزيون
+3) الإخراج
+4) الكتابة
+5) التصميم الفني
+6) التصوير
+7) الصوت والموسيقى
+8) الإنتاج
+9) التدريب والاستشارات
+
+Each category must contain multiple roles (Arabic + English).
+
+Allow easy extension of the list.
+
+==================================================
+MORE FORM SECTIONS
+==================================================
+
+- professional level
+- years of experience
+- preferred work types
+
+- bio
+- notable works
+- portfolio links
+
+- academic level
+- academic field + institution
+
+- skills
+- languages
+- dialects
+
+- phone
+- email
+- social links
+
+==================================================
+FORM UX
+==================================================
+
+- section-based or step-based
+- progress indicator
+- validation
+- smooth transitions
+- premium feel
+
+==================================================
+NAVBAR IMPROVEMENT
+==================================================
+
+Add icons next to:
+
+- الفنانون
+- الكاستنج
+- تواصل معنا
+
+Keep icons minimal and consistent.
+
+==================================================
+CONTACT SYSTEM
+==================================================
+
+- form only
+- Formspree
+- no personal data displayed
+
+==================================================
+ROUTING
+==================================================
+
+/ → Home
+/artist/:id → Artist
+/projects → Casting
+/project/:id → Details
+/join → Join
+
+==================================================
+DEPLOYMENT
+==================================================
+
+- fully static
+- Vite base path (/kawalees/)
+- GitHub Pages ready
+
+==================================================
+CREATIVE INTELLIGENCE & FREEDOM
+==================================================
+
+You are encouraged to think creatively and improve the system.
+
+- Enhance UI and UX where beneficial
+- Improve structure and organization
+- Refine user flows and interactions
+- Elevate visual quality and clarity
+
+You may:
+- reorganize components
+- improve accessibility
+- optimize performance
+- enhance usability
+
+IMPORTANT:
+- Do NOT break the core concept
+- Do NOT add backend systems
+- Do NOT overcomplicate
+
+==================================================
+FINAL RESULT
+==================================================
+
+A professional Arabic platform that:
+
+- showcases artists
+- provides casting opportunities
+- allows applications via Formspree
+- includes a powerful join system
+- maintains a clean modern UI
+- respects privacy
+- feels like a real startup product
+- works perfectly on GitHub Pages
