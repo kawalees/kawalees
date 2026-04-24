@@ -5,27 +5,21 @@ import path from "path";
 
 export default defineConfig({
   base: "/kawalees/",
-  plugins: [react(), tailwindcss()],
+
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-      "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+      "@": path.resolve(__dirname, "src"),
     },
     dedupe: ["react", "react-dom"],
   },
-  root: path.resolve(import.meta.dirname),
+
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist"),
+    outDir: "dist",
     emptyOutDir: true,
-  },
-  server: {
-    port: Number(process.env.PORT) || 5173,
-    host: "0.0.0.0",
-    allowedHosts: true,
-  },
-  preview: {
-    port: Number(process.env.PORT) || 4173,
-    host: "0.0.0.0",
-    allowedHosts: true,
   },
 });
