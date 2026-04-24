@@ -318,24 +318,24 @@ function useImageUpload(baseUrl: string) {
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const upload = async (file: File) => {
-    if (!file.type.startsWith("image/")) { setError("يرجى رفع ملف صورة (JPG، PNG، WebP)"); return; }
-    if (file.size > 5 * 1024 * 1024) { setError("حجم الصورة أكبر من 5 ميغابايت"); return; }
-    setIsUploading(true); setError(null);
-    setPreview(URL.createObjectURL(file));
-    try {
-      const r = await fetch(`${baseUrl}/api/storage/uploads/request-url`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
-      });
-      if (!r.ok) throw new Error();
-      const { uploadURL, objectPath } = await r.json();
-      const put = await fetch(uploadURL, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
-      if (!put.ok) throw new Error();
-      setUploadedUrl(`${window.location.origin}${baseUrl}/api/storage${objectPath}`);
-    } catch { setError("فشل رفع الصورة. حاول مرة أخرى."); setPreview(null); }
-    finally { setIsUploading(false); }
-  };
+const upload = async (file: File) => {
+  if (!file.type.startsWith("image/")) { setError("يرجى رفع ملف صورة (JPG، PNG، WebP)"); return; }
+  if (file.size > 5 * 1024 * 1024) { setError("حجم الصورة أكبر من 5 ميغابايت"); return; }
+  setIsUploading(true); setError(null);
+  setPreview(URL.createObjectURL(file));
+
+  setFile(file);
+  setIsUploading(false);
+};
+
+const handleCropConfirm = async (blob: Blob) => {
+  const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+
+  setCropSrc(null);
+  setFile(file);
+  setPreview(URL.createObjectURL(file));
+  setIsUploading(false);
+};
 
   const clear = () => { setUploadedUrl(null); setPreview(null); setError(null); };
   return { upload, isUploading, uploadedUrl, preview, error, clear };
