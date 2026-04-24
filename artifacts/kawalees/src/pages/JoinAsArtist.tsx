@@ -400,8 +400,16 @@ export default function JoinAsArtist() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const { upload, isUploading, uploadedUrl, preview, error: uploadError, clear: clearImg } = useImageUpload(baseUrl);
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
+const [file, setFile] = useState<File | null>(null);
+const [preview, setPreview] = useState<string | null>(null);
+const [isUploading, setIsUploading] = useState(false);
+const uploadedUrl = null;
+const uploadError = null;
+
+const clearImg = () => {
+  setFile(null);
+  setPreview(null);
+};  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   // Form state
   const [name, setName] = useState("");
@@ -460,29 +468,34 @@ export default function JoinAsArtist() {
     }
     setIsSubmitting(true);
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          specialty: selectedSpecialties.join("،"),
-          country: country.trim(),
-          city: city.trim() || undefined,
-          experience,
-          bio: bio.trim() || undefined,
-          education: education.trim() || undefined,
-          imageUrl: uploadedUrl || undefined,
-          portfolioLinks: portfolioLinks.trim() || undefined,
-          works: works.trim() || undefined,
-          email: email.trim() || undefined,
-          phone: phone.trim(),
-          gender,
-          dateOfBirth,
-          workTypes: selectedWorkTypes.join("،"),
-          languages: languages.trim() || undefined,
-          dialects: dialects.trim() || undefined,
-        }),
-      });
+const formData = new FormData();
+
+formData.append("name", name.trim());
+formData.append("specialty", selectedSpecialties.join("،"));
+formData.append("country", country.trim());
+formData.append("city", city.trim() || "");
+formData.append("experience", experience);
+formData.append("bio", bio.trim() || "");
+formData.append("education", education.trim() || "");
+formData.append("portfolioLinks", portfolioLinks.trim() || "");
+formData.append("works", works.trim() || "");
+formData.append("email", email.trim());
+formData.append("phone", phone.trim());
+formData.append("gender", gender);
+formData.append("dateOfBirth", dateOfBirth);
+formData.append("workTypes", selectedWorkTypes.join("،"));
+formData.append("languages", languages.trim() || "");
+formData.append("dialects", dialects.trim() || "");
+
+// 🔥 هذا السطر هو الحل
+if (file) {
+  formData.append("attachment", file);
+}
+
+const res = await fetch(FORMSPREE_ENDPOINT, {
+  method: "POST",
+  body: formData,
+});
       if (!res.ok) {
         throw new Error("فشل الإرسال");
       }
@@ -522,7 +535,8 @@ export default function JoinAsArtist() {
   const handleCropConfirm = async (blob: Blob) => {
     const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
     setCropSrc(null);
-    await upload(file);
+    setFile(file);
+setPreview(URL.createObjectURL(file));
   };
 
   const handleCropCancel = () => {
