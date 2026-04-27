@@ -12,7 +12,7 @@ import "react-easy-crop/react-easy-crop.css";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useToast } from "@/hooks/use-toast";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/maqaoqeo";
 
 // ─── Specialty Groups ──────────────────────────────────────────
 const SPECIALTY_GROUPS = [
@@ -311,42 +311,6 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
   );
 }
 
-// ─── Image upload hook ────────────────────────────────────────
-  const [isUploading, setIsUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-const upload = async (file: File) => {
-  if (!file.type.startsWith("image/")) {
-    setError("يرجى رفع ملف صورة (JPG، PNG، WebP)");
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    setError("حجم الصورة أكبر من 5 ميغابايت");
-    return;
-  }
-
-  setIsUploading(true);
-  setError(null);
-
-  setPreview(URL.createObjectURL(file));
-  setFile(file);
-
-  setIsUploading(false);
-};
-
-const handleCropConfirm = async (blob: Blob) => {
-  const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
-
-  setCropSrc(null);
-  setFile(file);
-  setPreview(URL.createObjectURL(file));
-  setIsUploading(false);
-};
-
-
-
 // ─── Multi-select checkbox ─────────────────────────────────────
 function MultiCheck({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
@@ -406,16 +370,18 @@ export default function JoinAsArtist() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
-const [file, setFile] = useState<File | null>(null);
-const [preview, setPreview] = useState<string | null>(null);
-const [isUploading, setIsUploading] = useState(false);
-const uploadedUrl = null;
-const uploadError = null;
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
-const clearImg = () => {
-  setFile(null);
-  setPreview(null);
-};  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const clearImg = () => {
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(null);
+    setPreview(null);
+    setUploadError(null);
+  };
 
   // Form state
   const [name, setName] = useState("");
@@ -449,6 +415,52 @@ const clearImg = () => {
   const toggleGroup = (i: number) =>
     setExpandedGroups(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
 
+  const upload = async (selectedFile: File) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      setUploadError("يرجى رفع ملف صورة (JPG، PNG، WebP)");
+      return;
+    }
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setUploadError("حجم الصورة أكبر من 5 ميغابايت");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setCropSrc(objectUrl);
+
+    setIsUploading(false);
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    const croppedFile = new File([blob], "profile.jpg", {
+      type: "image/jpeg",
+      lastModified: Date.now(),
+    });
+
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    if (preview) URL.revokeObjectURL(preview);
+
+    const previewUrl = URL.createObjectURL(croppedFile);
+
+    setFile(croppedFile);
+    setPreview(previewUrl);
+    setCropSrc(null);
+    setUploadError(null);
+    setIsUploading(false);
+  };
+
+  const handleCropCancel = () => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const validate = () => {
     const e: Record<string, string> = {};
     if (!name.trim()) e.name = "الاسم الكامل مطلوب";
@@ -468,48 +480,58 @@ const clearImg = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validate()) {
       toast({ variant: "destructive", title: "يرجى مراجعة البيانات", description: "تحقق من الحقول المطلوبة" });
       return;
     }
+
     setIsSubmitting(true);
+
     try {
-const formData = new FormData();
+      const formData = new FormData();
 
-formData.append("name", name.trim());
-formData.append("specialty", selectedSpecialties.join("،"));
-formData.append("country", country.trim());
-formData.append("city", city.trim() || "");
-formData.append("experience", experience);
-formData.append("bio", bio.trim() || "");
-formData.append("education", education.trim() || "");
-formData.append("portfolioLinks", portfolioLinks.trim() || "");
-formData.append("works", works.trim() || "");
-formData.append("email", email.trim());
-formData.append("phone", phone.trim());
-formData.append("gender", gender);
-formData.append("dateOfBirth", dateOfBirth);
-formData.append("workTypes", selectedWorkTypes.join("،"));
-formData.append("languages", languages.trim() || "");
-formData.append("dialects", dialects.trim() || "");
+      formData.append("name", name.trim());
+      formData.append("specialty", selectedSpecialties.join("، "));
+      formData.append("country", country.trim());
+      formData.append("city", city.trim());
+      formData.append("experience", experience);
+      formData.append("bio", bio.trim());
+      formData.append("education", education.trim());
+      formData.append("portfolioLinks", portfolioLinks.trim());
+      formData.append("works", works.trim());
+      formData.append("email", email.trim());
+      formData.append("phone", phone.trim());
+      formData.append("gender", gender);
+      formData.append("dateOfBirth", dateOfBirth);
+      formData.append("ageRange", ageRange);
+      formData.append("workTypes", selectedWorkTypes.join("، "));
+      formData.append("languages", languages.trim());
+      formData.append("dialects", dialects.trim());
 
-// 🔥 هذا السطر هو الحل
-if (file) {
-  formData.append("attachment", file);
-}
+      if (file) {
+        formData.append("attachment", file);
+      }
 
-const res = await fetch(FORMSPREE_ENDPOINT, {
-  method: "POST",
-  body: formData,
-});
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
       if (!res.ok) {
         throw new Error("فشل الإرسال");
       }
+
       setIsSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
       toast({ variant: "destructive", title: "حدث خطأ", description: err.message || "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى." });
-    } finally { setIsSubmitting(false); }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // ─── Success screen ──────────────────────────────────────────
@@ -536,22 +558,6 @@ const res = await fetch(FORMSPREE_ENDPOINT, {
       </AppLayout>
     );
   }
-
-  // ─── Crop confirm handler ─────────────────────────────────────
-const handleCropConfirm = async (blob: Blob) => {
-  const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
-
-  setCropSrc(null);
-  setFile(file);
-  setPreview(URL.createObjectURL(file));
-  setIsUploading(false);
-};
-
-  const handleCropCancel = () => {
-    if (cropSrc) URL.revokeObjectURL(cropSrc);
-    setCropSrc(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
 
   // ─── Main Form ───────────────────────────────────────────────
   return (
@@ -658,14 +664,11 @@ const handleCropConfirm = async (blob: Blob) => {
                       <p className="text-gray-600 text-xs">صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB)</p>
                     </div>
                   </div>
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
                     onChange={e => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      if (!f.type.startsWith("image/")) return;
-                      clearImg();
-                      const objectUrl = URL.createObjectURL(f);
-                      setCropSrc(objectUrl);
+                      const selectedFile = e.target.files?.[0];
+                      if (!selectedFile) return;
+                      upload(selectedFile);
                       e.target.value = "";
                     }} />
                 </div>
