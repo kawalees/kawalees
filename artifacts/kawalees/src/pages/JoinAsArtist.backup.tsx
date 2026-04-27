@@ -313,6 +313,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
 
 // ─── Image upload hook ────────────────────────────────────────
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -345,7 +346,9 @@ const handleCropConfirm = async (blob: Blob) => {
   setIsUploading(false);
 };
 
-
+  const clear = () => { setUploadedUrl(null); setPreview(null); setError(null); };
+  return { upload, isUploading, uploadedUrl, preview, error, clear };
+}
 
 // ─── Multi-select checkbox ─────────────────────────────────────
 function MultiCheck({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
