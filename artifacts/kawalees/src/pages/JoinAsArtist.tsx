@@ -492,6 +492,19 @@ export default function JoinAsArtist() {
       const formData = new FormData();
 
       formData.append("name", name.trim());
+      formData.append("_replyto", email.trim());
+      formData.append("_subject", "Kawalees artist registration");
+      formData.append("message", `
+Name: ${name.trim()}
+Email: ${email.trim()}
+Phone: ${phone.trim()}
+Country: ${country.trim()}
+Specialty: ${selectedSpecialties.join("ØŒ ")}
+Experience: ${experience}
+Bio: ${bio.trim()}
+Works: ${works.trim()}
+Portfolio: ${portfolioLinks.trim()}
+`);
       formData.append("specialty", selectedSpecialties.join("، "));
       formData.append("country", country.trim());
       formData.append("city", city.trim());
@@ -510,7 +523,10 @@ export default function JoinAsArtist() {
       formData.append("dialects", dialects.trim());
 
       if (file) {
-        formData.append("attachment", file);
+        formData.append(
+          "imageStatus",
+          "ØªÙ… Ø§Ø®ØªÙŠØ§Ø± ØµÙˆØ±Ø© ÙˆØ§Ù‚ØªØµØ§ØµÙ‡Ø§ØŒ Ù„ÙƒÙ† Ù„Ù… ÙŠØªÙ… Ø¥Ø±ÙØ§Ù‚Ù‡Ø§ Ù„Ø£Ù† Ø®Ø·Ø© Formspree Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù„Ø§ ØªØ¯Ø¹Ù… Ø±ÙØ¹ Ø§Ù„Ù…Ù„ÙØ§Øª."
+        );
       }
 
       const res = await fetch(FORMSPREE_ENDPOINT, {
