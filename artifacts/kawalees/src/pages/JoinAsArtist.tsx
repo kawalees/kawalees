@@ -156,7 +156,10 @@ function createImage(url: string): Promise<HTMLImageElement> {
 async function getCroppedImg(imageSrc: string, pixelCrop: CropArea, rotation = 0): Promise<Blob> {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas is not supported");
+  }
   const rad = (rotation * Math.PI) / 180;
   const sin = Math.abs(Math.sin(rad));
   const cos = Math.abs(Math.cos(rad));
@@ -168,9 +171,13 @@ async function getCroppedImg(imageSrc: string, pixelCrop: CropArea, rotation = 0
   ctx.rotate(rad);
   ctx.translate(-image.width / 2, -image.height / 2);
   ctx.drawImage(image, 0, 0);
-  const data = ctx.getImageData(pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height);
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  const cropX = Math.max(0, Math.min(Math.round(pixelCrop.x), canvas.width - 1));
+  const cropY = Math.max(0, Math.min(Math.round(pixelCrop.y), canvas.height - 1));
+  const cropWidth = Math.max(1, Math.min(Math.round(pixelCrop.width), canvas.width - cropX));
+  const cropHeight = Math.max(1, Math.min(Math.round(pixelCrop.height), canvas.height - cropY));
+  const data = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
+  canvas.width = cropWidth;
+  canvas.height = cropHeight;
   ctx.putImageData(data, 0, 0);
   return new Promise((resolve, reject) => {
     canvas.toBlob(b => b ? resolve(b) : reject(new Error("Crop failed")), "image/jpeg", 0.92);
@@ -452,6 +459,10 @@ export default function JoinAsArtist() {
     setPreview(previewUrl);
     setCropSrc(null);
     setUploadError(null);
+    setErrors(prev => {
+      const { image, ...rest } = prev;
+      return rest;
+    });
     setIsUploading(false);
   };
 
@@ -463,6 +474,7 @@ export default function JoinAsArtist() {
 
   const validate = () => {
     const e: Record<string, string> = {};
+    if (!file) e.image = "الصورة الشخصية مطلوبة";
     if (!name.trim()) e.name = "الاسم الكامل مطلوب";
     if (!country.trim()) e.country = "دولة الإقامة مطلوبة";
     if (selectedSpecialties.length === 0) e.specialties = "يرجى اختيار تخصص واحد على الأقل";
@@ -523,10 +535,8 @@ Portfolio: ${portfolioLinks.trim()}
       formData.append("dialects", dialects.trim());
 
       if (file) {
-        formData.append(
-          "imageStatus",
-          "ØªÙ… Ø§Ø®ØªÙŠØ§Ø± ØµÙˆØ±Ø© ÙˆØ§Ù‚ØªØµØ§ØµÙ‡Ø§ØŒ Ù„ÙƒÙ† Ù„Ù… ÙŠØªÙ… Ø¥Ø±ÙØ§Ù‚Ù‡Ø§ Ù„Ø£Ù† Ø®Ø·Ø© Formspree Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù„Ø§ ØªØ¯Ø¹Ù… Ø±ÙØ¹ Ø§Ù„Ù…Ù„ÙØ§Øª."
-        );
+        formData.append("profileImage", file, file.name);
+        formData.append("imageStatus", "تم إرفاق الصورة الشخصية بنجاح");
       }
 
       const res = await fetch(FORMSPREE_ENDPOINT, {
@@ -676,7 +686,7 @@ Portfolio: ${portfolioLinks.trim()}
                             className="p-1 text-gray-600 hover:text-red-400 transition-colors"><X size={13} /></button>
                         </div>
                       )}
-                      {uploadError && <p className={errCls}><AlertCircle size={11} />{uploadError}</p>}
+                      {(uploadError || errors.image) && <p className={errCls}><AlertCircle size={11} />{uploadError || errors.image}</p>}
                       <p className="text-gray-600 text-xs">صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB)</p>
                     </div>
                   </div>
