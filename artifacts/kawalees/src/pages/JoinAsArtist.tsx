@@ -176,11 +176,33 @@ async function getCroppedImg(imageSrc: string, pixelCrop: CropArea, rotation = 0
   const cropWidth = Math.max(1, Math.min(Math.round(pixelCrop.width), canvas.width - cropX));
   const cropHeight = Math.max(1, Math.min(Math.round(pixelCrop.height), canvas.height - cropY));
   const data = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
-  canvas.width = cropWidth;
-  canvas.height = cropHeight;
+  const outputSize = Math.min(640, cropWidth, cropHeight);
+  canvas.width = outputSize;
+  canvas.height = outputSize;
   ctx.putImageData(data, 0, 0);
+  if (cropWidth !== outputSize || cropHeight !== outputSize) {
+    const sourceCanvas = document.createElement("canvas");
+    sourceCanvas.width = cropWidth;
+    sourceCanvas.height = cropHeight;
+    const sourceCtx = sourceCanvas.getContext("2d");
+    if (!sourceCtx) {
+      throw new Error("Canvas is not supported");
+    }
+    sourceCtx.putImageData(data, 0, 0);
+    ctx.clearRect(0, 0, outputSize, outputSize);
+    ctx.drawImage(sourceCanvas, 0, 0, outputSize, outputSize);
+  }
   return new Promise((resolve, reject) => {
-    canvas.toBlob(b => b ? resolve(b) : reject(new Error("Crop failed")), "image/jpeg", 0.92);
+    canvas.toBlob(b => b ? resolve(b) : reject(new Error("Crop failed")), "image/jpeg", 0.75);
+  });
+}
+
+function fileToDataUrl(selectedFile: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result || "")));
+    reader.addEventListener("error", () => reject(new Error("Image read failed")));
+    reader.readAsDataURL(selectedFile);
   });
 }
 
@@ -535,8 +557,9 @@ Portfolio: ${portfolioLinks.trim()}
       formData.append("dialects", dialects.trim());
 
       if (file) {
-        formData.append("attachment", file, file.name);
-        formData.append("imageStatus", "تم إرفاق الصورة الشخصية بنجاح");
+        formData.append("profileImageDataUrl", await fileToDataUrl(file));
+        formData.append("profileImageName", file.name);
+        formData.append("imageStatus", "تم حفظ الصورة الشخصية داخل بيانات الطلب");
       }
 
       const res = await fetch(FORMSPREE_ENDPOINT, {
