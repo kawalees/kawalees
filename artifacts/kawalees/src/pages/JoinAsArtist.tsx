@@ -535,7 +535,7 @@ Portfolio: ${portfolioLinks.trim()}
       formData.append("dialects", dialects.trim());
 
       if (file) {
-        formData.append("profileImage", file, file.name);
+        formData.append("attachment", file, file.name);
         formData.append("imageStatus", "تم إرفاق الصورة الشخصية بنجاح");
       }
 
@@ -548,7 +548,15 @@ Portfolio: ${portfolioLinks.trim()}
       });
 
       if (!res.ok) {
-        throw new Error("فشل الإرسال");
+        let message = "فشل الإرسال";
+        try {
+          const data = await res.json();
+          const formspreeError = data?.errors?.[0]?.message || data?.error || data?.message;
+          if (formspreeError) message = formspreeError;
+        } catch {
+          // Keep the generic message when Formspree returns a non-JSON error.
+        }
+        throw new Error(message);
       }
 
       setIsSuccess(true);
@@ -640,7 +648,7 @@ Portfolio: ${portfolioLinks.trim()}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="space-y-10">
 
             {/* ── SECTION 1: Basic Info ── */}
