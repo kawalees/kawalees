@@ -2,7 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { db, projectsTable, applicationsTable, usersTable } from "@workspace/db";
 import { eq, desc, count, and } from "drizzle-orm";
-import { requireArtist, requireCompany, PLAN_LIMITS, type AuthRequest, requireAuth } from "../lib/auth";
+import { requireArtist, requireCompany, PLAN_LIMITS, type AuthRequest } from "../lib/auth";
 
 const router = Router();
 
@@ -11,6 +11,12 @@ const createProjectSchema = z.object({
   description: z.string().min(10, "الوصف 10 أحرف على الأقل"),
   type: z.enum(["normal", "featured"]).default("normal"),
 });
+
+function parseRouteId(rawId: string | string[] | undefined): number {
+  const value = Array.isArray(rawId) ? rawId[0] : rawId;
+  const id = Number.parseInt(value ?? "", 10);
+  return Number.isNaN(id) ? NaN : id;
+}
 
 // GET /projects — public listing with applicant counts + optional search/filter
 router.get("/projects", async (req, res) => {
@@ -67,7 +73,7 @@ router.get("/projects", async (req, res) => {
 // GET /projects/:id — project detail with applicant count
 router.get("/projects/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseRouteId(req.params.id);
     if (isNaN(id)) {
       res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
       return;
@@ -128,7 +134,7 @@ router.post("/projects", requireCompany, async (req: AuthRequest, res) => {
 // DELETE /projects/:id — company deletes own project
 router.delete("/projects/:id", requireCompany, async (req: AuthRequest, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseRouteId(req.params.id);
     const [project] = await db.select().from(projectsTable).where(eq(projectsTable.id, id)).limit(1);
     if (!project || project.companyId !== req.user!.userId) {
       res.status(403).json({ error: "forbidden", message: "لا يمكنك حذف هذا المشروع" });
@@ -146,7 +152,7 @@ router.delete("/projects/:id", requireCompany, async (req: AuthRequest, res) => 
 // POST /projects/:id/apply — artist applies
 router.post("/projects/:id/apply", requireArtist, async (req: AuthRequest, res) => {
   try {
-    const projectId = parseInt(req.params.id);
+    const projectId = parseRouteId(req.params.id);
     if (isNaN(projectId)) {
       res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
       return;
@@ -206,7 +212,7 @@ router.post("/projects/:id/apply", requireArtist, async (req: AuthRequest, res) 
 // GET /projects/:id/applicants — company views applicants
 router.get("/projects/:id/applicants", requireCompany, async (req: AuthRequest, res) => {
   try {
-    const projectId = parseInt(req.params.id);
+    const projectId = parseRouteId(req.params.id);
     const [project] = await db.select().from(projectsTable).where(eq(projectsTable.id, projectId)).limit(1);
     if (!project || project.companyId !== req.user!.userId) {
       res.status(403).json({ error: "forbidden", message: "لا يمكنك الوصول لهذا المشروع" });

@@ -24,12 +24,19 @@ export default function Projects() {
   }, []);
 
   const filtered = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
     return allProjects.filter((p) => {
+      const searchableFields = [
+        p.title,
+        p.description,
+        p.producer,
+        p.location,
+        p.type,
+        ...p.roles,
+      ];
       const matchesSearch =
-        !search ||
-        p.title.toLowerCase().includes(search.toLowerCase()) ||
-        p.description.toLowerCase().includes(search.toLowerCase()) ||
-        (p.producer && p.producer.toLowerCase().includes(search.toLowerCase()));
+        !normalizedSearch ||
+        searchableFields.some((field) => field?.toLowerCase().includes(normalizedSearch));
       const matchesStatus = statusFilter === "all" || p.status === statusFilter;
       const matchesType = typeFilter === "الكل" || p.type === typeFilter;
       return matchesSearch && matchesStatus && matchesType;

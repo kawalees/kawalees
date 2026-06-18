@@ -6,7 +6,7 @@ import {
   CheckCircle2, Palette, Handshake
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { getDashboardPath, useAuth } from "@/hooks/useAuth";
 
 const STEPS: Record<string, { icon: typeof UserCircle; title: string; desc: string; href: string; cta: string }[]> = {
   artist: [
@@ -67,7 +67,7 @@ const STEPS: Record<string, { icon: typeof UserCircle; title: string; desc: stri
       icon: Clapperboard,
       title: "انشر فرص العضوية",
       desc: "أعلن عن أدوار وفرص الانضمام لفرقتك",
-      href: "/dashboard/artist",
+      href: "/dashboard/company",
       cta: "نشر فرصة",
     },
     {
@@ -99,7 +99,7 @@ export default function Onboarding() {
   const steps = STEPS[userType] ?? STEPS.artist;
   const typeInfo = TYPE_LABELS[userType] ?? TYPE_LABELS.artist;
   const TypeIcon = typeInfo.icon;
-  const dashboardPath = userType === "company" ? "/dashboard/company" : "/dashboard/artist";
+  const dashboardPath = getDashboardPath(user);
 
   return (
     <AppLayout>

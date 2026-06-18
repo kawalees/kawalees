@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Send, CheckCircle2, User, Building, Briefcase, MessageSquare } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -76,12 +77,12 @@ export default function ContactRequest() {
             <p className="text-gray-400 text-lg mb-8 max-w-lg mx-auto">
               سيقوم فريق كواليس بمراجعة طلبك والتواصل مع الفنان. سنتواصل معك قريبًا.
             </p>
-            <button
-              onClick={() => (window.location.href = "/")}
+            <Link
+              href="/"
               className="px-8 py-3 bg-white/10 text-white hover:bg-primary hover:text-background font-bold rounded-xl transition-colors"
             >
               العودة للرئيسية
-            </button>
+            </Link>
           </motion.div>
         ) : (
           <motion.div

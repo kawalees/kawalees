@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type NextFunction, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import { artistsTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
@@ -7,14 +7,26 @@ import { sendEmail, approvalEmailHtml, rejectionEmailHtml } from "../lib/email";
 
 const router: IRouter = Router();
 
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction && !process.env.ADMIN_KEY) {
+  throw new Error("ADMIN_KEY must be set in production.");
+}
+
 const ADMIN_KEY = process.env.ADMIN_KEY || "kawalees-admin-2024";
 
-function requireAdminKey(req: any, res: any, next: any) {
+function requireAdminKey(req: Request, res: Response, next: NextFunction): void {
   const key = req.headers["x-admin-key"];
   if (!key || key !== ADMIN_KEY) {
-    return res.status(401).json({ error: "unauthorized", message: "مفتاح الإدارة غير صحيح" });
+    res.status(401).json({ error: "unauthorized", message: "مفتاح الإدارة غير صحيح" });
+    return;
   }
   next();
+}
+
+function getRouteParam(value: string | string[] | undefined): string | null {
+  if (Array.isArray(value)) return value[0] ?? null;
+  return value ?? null;
 }
 
 function mapArtist(a: typeof artistsTable.$inferSelect) {
@@ -60,7 +72,11 @@ router.get("/admin/applications", requireAdminKey, async (req, res) => {
 
 router.patch("/admin/applications/:id/approve", requireAdminKey, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = getRouteParam(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
+      return;
+    }
 
     const [updated] = await db
       .update(artistsTable)
@@ -69,7 +85,8 @@ router.patch("/admin/applications/:id/approve", requireAdminKey, async (req, res
       .returning();
 
     if (!updated) {
-      return res.status(404).json({ error: "not_found", message: "الطلب غير موجود" });
+      res.status(404).json({ error: "not_found", message: "الطلب غير موجود" });
+      return;
     }
 
     if (updated.email) {
@@ -89,7 +106,11 @@ router.patch("/admin/applications/:id/approve", requireAdminKey, async (req, res
 
 router.delete("/admin/applications/:id", requireAdminKey, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = getRouteParam(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
+      return;
+    }
 
     const [toDelete] = await db
       .select()
@@ -97,7 +118,8 @@ router.delete("/admin/applications/:id", requireAdminKey, async (req, res) => {
       .where(eq(artistsTable.id, id));
 
     if (!toDelete) {
-      return res.status(404).json({ error: "not_found", message: "الطلب غير موجود" });
+      res.status(404).json({ error: "not_found", message: "الطلب غير موجود" });
+      return;
     }
 
     await db.delete(artistsTable).where(eq(artistsTable.id, id));
@@ -148,7 +170,11 @@ const UpdateArtistBody = z.object({
 
 router.patch("/admin/artists/:id", requireAdminKey, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = getRouteParam(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
+      return;
+    }
     const body = UpdateArtistBody.parse(req.body);
 
     const [updated] = await db
@@ -158,7 +184,8 @@ router.patch("/admin/artists/:id", requireAdminKey, async (req, res) => {
       .returning({ id: artistsTable.id });
 
     if (!updated) {
-      return res.status(404).json({ error: "not_found", message: "الفنان غير موجود" });
+      res.status(404).json({ error: "not_found", message: "الفنان غير موجود" });
+      return;
     }
 
     res.json({ success: true, message: "تم تحديث بيانات الفنان" });
@@ -170,7 +197,11 @@ router.patch("/admin/artists/:id", requireAdminKey, async (req, res) => {
 
 router.delete("/admin/artists/:id", requireAdminKey, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = getRouteParam(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "bad_request", message: "معرف غير صحيح" });
+      return;
+    }
 
     const [deleted] = await db
       .delete(artistsTable)
@@ -178,7 +209,8 @@ router.delete("/admin/artists/:id", requireAdminKey, async (req, res) => {
       .returning({ id: artistsTable.id });
 
     if (!deleted) {
-      return res.status(404).json({ error: "not_found", message: "الفنان غير موجود" });
+      res.status(404).json({ error: "not_found", message: "الفنان غير موجود" });
+      return;
     }
 
     res.json({ success: true, message: "تم حذف الفنان من الدليل" });

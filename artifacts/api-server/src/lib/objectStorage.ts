@@ -262,6 +262,15 @@ async function signObjectURL({
     );
   }
 
-  const { signed_url: signedURL } = await response.json();
-  return signedURL;
+  const data = await response.json();
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("signed_url" in data) ||
+    typeof data.signed_url !== "string"
+  ) {
+    throw new Error("Failed to sign object URL: invalid sidecar response");
+  }
+
+  return data.signed_url;
 }

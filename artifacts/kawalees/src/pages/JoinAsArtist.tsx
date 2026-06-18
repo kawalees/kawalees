@@ -1,11 +1,13 @@
 import { useState, useRef, useCallback } from "react";
+import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User, Phone, MapPin, Briefcase, GraduationCap, Link2, Film,
   CheckCircle2, Send, ChevronDown, Lock, Shield, ImageIcon,
   Upload, X, Languages, Users, ChevronRight,
   Theater, AlertCircle, Music, Pen, Clapperboard, Sparkles, Search,
-  ZoomIn, ZoomOut, RotateCw, Crop, Square, Circle
+  ZoomIn, ZoomOut, RotateCw, Crop, Square, Circle,
+  type LucideIcon
 } from "lucide-react";
 import Cropper from "react-easy-crop";
 import "react-easy-crop/react-easy-crop.css";
@@ -219,7 +221,7 @@ function ImageCropModal({ src, onConfirm, onCancel }: {
   const [isRound, setIsRound] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const onCropComplete = useCallback((_: any, pixels: CropArea) => {
+  const onCropComplete = useCallback((_croppedArea: CropArea, pixels: CropArea) => {
     setCroppedAreaPixels(pixels);
   }, []);
 
@@ -362,7 +364,7 @@ function MultiCheck({ label, checked, onChange }: { label: string; checked: bool
 
 // ─── Section wrapper ───────────────────────────────────────────
 function Section({ title, icon: Icon, children }: {
-  title: string; icon: any; children: React.ReactNode
+  title: string; icon: LucideIcon; children: React.ReactNode
 }) {
   return (
     <div className="relative">
@@ -383,7 +385,7 @@ const inputCls = "w-full bg-zinc-900/80 border border-white/8 rounded-xl px-4 py
 const labelCls = "block text-sm font-medium text-gray-400 mb-1.5";
 const errCls = "text-red-400 text-xs mt-1 flex items-center gap-1";
 
-function FieldNote({ icon: Icon = Lock, text }: { icon?: any; text: string }) {
+function FieldNote({ icon: Icon = Lock, text }: { icon?: LucideIcon; text: string }) {
   return (
     <p className="flex items-center gap-1.5 text-xs text-gray-600 mt-1.5">
       <Icon size={11} className="text-gray-600 flex-shrink-0" />{text}
@@ -533,7 +535,7 @@ Name: ${name.trim()}
 Email: ${email.trim()}
 Phone: ${phone.trim()}
 Country: ${country.trim()}
-Specialty: ${selectedSpecialties.join("ØŒ ")}
+Specialty: ${selectedSpecialties.join("، ")}
 Experience: ${experience}
 Bio: ${bio.trim()}
 Works: ${works.trim()}
@@ -584,8 +586,9 @@ Portfolio: ${portfolioLinks.trim()}
 
       setIsSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: "حدث خطأ", description: err.message || "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى.";
+      toast({ variant: "destructive", title: "حدث خطأ", description: message });
     } finally {
       setIsSubmitting(false);
     }
@@ -606,10 +609,11 @@ Portfolio: ${portfolioLinks.trim()}
               شكراً للانضمام إلى كواليس. سيتم مراجعة ملفك من قِبَل فريقنا خلال 3–5 أيام عمل وسنخبرك بالنتيجة عبر رقم هاتفك.
             </p>
             <p className="text-gray-600 text-sm mb-8">لن تظهر أي بياناتك الشخصية حتى تتم الموافقة ونشر ملفك.</p>
-            <button onClick={() => (window.location.href = "/")}
+            <Link
+              href="/"
               className="px-8 py-3 bg-white/8 text-white hover:bg-primary hover:text-background font-display font-bold rounded-xl transition-colors">
               العودة للرئيسية
-            </button>
+            </Link>
           </motion.div>
         </div>
       </AppLayout>

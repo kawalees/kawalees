@@ -2,6 +2,12 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction && !process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET must be set in production.");
+}
+
 const JWT_SECRET = process.env.SESSION_SECRET || "kawalees-dev-secret-2024";
 const SALT_ROUNDS = 10;
 
@@ -57,8 +63,8 @@ export function requireArtist(req: AuthRequest, res: Response, next: NextFunctio
 
 export function requireCompany(req: AuthRequest, res: Response, next: NextFunction): void {
   requireAuth(req, res, () => {
-    if (req.user?.type !== "company") {
-      res.status(403).json({ error: "forbidden", message: "Company access required" });
+    if (req.user?.type !== "company" && req.user?.type !== "group") {
+      res.status(403).json({ error: "forbidden", message: "Company or group access required" });
       return;
     }
     next();

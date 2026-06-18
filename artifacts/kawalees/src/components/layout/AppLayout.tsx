@@ -1,12 +1,14 @@
 import { type ReactNode, useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Menu, X, Clapperboard, Users, Mail, UserPlus } from "lucide-react";
+import { Menu, X, Clapperboard, Users, Mail, UserPlus, Crown, LogIn, LayoutDashboard, LogOut } from "lucide-react";
+import { getDashboardPath, useAuth } from "@/hooks/useAuth";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
+  const { user, logout, isLoading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -24,8 +26,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const navLinks = [
     { href: "/", label: "الفنانون", icon: Users },
     { href: "/projects", label: "الكاستنج", icon: Clapperboard },
+    { href: "/pricing", label: "الباقات", icon: Crown },
     { href: "/contact", label: "تواصل معنا", icon: Mail },
   ];
+
+  const dashboardPath = getDashboardPath(user);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground dark selection:bg-primary/30 selection:text-primary">
@@ -60,6 +65,45 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
             {/* Join CTA */}
             <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+              {!isLoading && user ? (
+                <>
+                  <Link
+                    href={dashboardPath}
+                    data-testid="link-dashboard"
+                    className={`font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
+                      isActive(dashboardPath)
+                        ? "border-primary bg-primary text-background"
+                        : "border-primary/40 text-primary hover:bg-primary/10"
+                    }`}
+                  >
+                    <LayoutDashboard size={14} />
+                    لوحة التحكم
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="font-display text-sm px-3 py-2 rounded-full border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1.5"
+                  >
+                    <LogOut size={14} />
+                    خروج
+                  </button>
+                </>
+              ) : (
+                !isLoading && (
+                  <Link
+                    href="/login"
+                    data-testid="link-login"
+                    className={`font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
+                      isActive("/login")
+                        ? "border-primary bg-primary text-background"
+                        : "border-white/15 text-gray-300 hover:border-primary/40 hover:text-primary"
+                    }`}
+                  >
+                    <LogIn size={14} />
+                    دخول
+                  </Link>
+                )
+              )}
               <Link
                 href="/join"
                 data-testid="link-join"
@@ -78,7 +122,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <button
               className="md:hidden z-50 p-2 text-gray-300 hover:text-primary"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="toggle menu"
+              aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -113,6 +158,35 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <UserPlus size={18} />
               انضم كفنان
             </Link>
+            {!isLoading && user ? (
+              <>
+                <Link
+                  href={dashboardPath}
+                  className="font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2"
+                >
+                  <LayoutDashboard size={18} />
+                  لوحة التحكم
+                </Link>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="font-display text-xl text-gray-400 hover:text-white flex items-center gap-2 text-right"
+                >
+                  <LogOut size={18} />
+                  خروج
+                </button>
+              </>
+            ) : (
+              !isLoading && (
+                <Link
+                  href="/login"
+                  className="font-display text-xl text-gray-300 hover:text-primary flex items-center gap-2"
+                >
+                  <LogIn size={18} />
+                  تسجيل الدخول
+                </Link>
+              )
+            )}
           </div>
         </motion.div>
       </header>

@@ -291,7 +291,7 @@ export default function CompanyDashboard() {
     navigate("/login");
     return null;
   }
-  if (user.type !== "company") {
+  if (user.type !== "company" && user.type !== "group") {
     navigate("/dashboard/artist");
     return null;
   }

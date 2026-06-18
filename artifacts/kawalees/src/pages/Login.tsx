@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { getDashboardPath, useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 
@@ -36,11 +36,7 @@ export default function Login() {
       login(data.token, data.user);
       toast({ title: "أهلًا بك مجددًا!", description: `مرحبًا ${data.user.name}` });
 
-      if (data.user.type === "company") {
-        navigate("/dashboard/company");
-      } else {
-        navigate("/dashboard/artist");
-      }
+      navigate(getDashboardPath(data.user));
     } catch {
       toast({ title: "خطأ", description: "تعذّر الاتصال بالخادم، تحقق من اتصالك بالإنترنت", variant: "destructive" });
     } finally {

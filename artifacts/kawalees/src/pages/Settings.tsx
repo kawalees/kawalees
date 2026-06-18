@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { getDashboardPath, useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, User, Lock, Crown, ChevronLeft, CheckCircle2 } from "lucide-react";
 import { Link } from "wouter";
@@ -51,7 +51,7 @@ export default function Settings() {
         toast({ title: "خطأ", description: data.message ?? "فشل تحديث الاسم", variant: "destructive" });
         return;
       }
-      login(token!, { ...user, name: data.name });
+      login(token!, { ...user!, name: data.name });
       toast({ title: "تم التحديث", description: "تم تحديث اسمك بنجاح" });
     } catch {
       toast({ title: "خطأ", description: "تعذّر الاتصال بالخادم", variant: "destructive" });
@@ -96,7 +96,7 @@ export default function Settings() {
     }
   }
 
-  const dashboardHref = user.type === "artist" ? "/dashboard/artist" : "/dashboard/company";
+  const dashboardHref = getDashboardPath(user);
 
   return (
     <AppLayout>

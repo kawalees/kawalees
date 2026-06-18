@@ -6,7 +6,7 @@ export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  type: text("type").notNull(), // 'artist' | 'company'
+  type: text("type").notNull(), // 'artist' | 'company' | 'group'
   plan: text("plan").notNull().default("free"), // 'free' | 'pro' | 'elite'
   name: text("name").notNull(),
   createdAt: timestamp("created_at").defaultNow(),

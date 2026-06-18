@@ -1,11 +1,10 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { setAuthTokenGetter } from "@workspace/api-client-react";
 
 export interface AuthUser {
   id: number;
   email: string;
   name: string;
-  type: "artist" | "company";
+  type: "artist" | "company" | "group";
   plan: "free" | "pro" | "elite";
 }
 
@@ -25,11 +24,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Attach token to all api-client-react requests automatically
-  useEffect(() => {
-    setAuthTokenGetter(() => localStorage.getItem(TOKEN_KEY));
-  }, []);
 
   // On mount, verify stored token
   useEffect(() => {
@@ -78,4 +72,9 @@ export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
+}
+
+export function getDashboardPath(user: Pick<AuthUser, "type"> | null): string {
+  if (!user) return "/login";
+  return user.type === "artist" ? "/dashboard/artist" : "/dashboard/company";
 }

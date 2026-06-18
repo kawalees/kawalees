@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { getDashboardPath, useAuth } from "@/hooks/useAuth";
 import {
   Check, Crown, Zap, Star, Users, Building2,
   ChevronLeft, X, ChevronDown, ChevronUp
@@ -421,7 +421,7 @@ export default function Pricing() {
         {user && (
           <div className="mt-8 text-center">
             <Link
-              href={user.type === "artist" ? "/dashboard/artist" : "/dashboard/company"}
+              href={getDashboardPath(user)}
               className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-300 transition-colors"
             >
               <ChevronLeft size={14} />

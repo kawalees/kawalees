@@ -10,7 +10,7 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { ArtistCard, ArtistCardSkeleton } from "@/components/ArtistCard";
+import { ArtistCard } from "@/components/ArtistCard";
 import { artists as allArtists } from "@/data/artists";
 
 const HOW_IT_WORKS = [
@@ -111,11 +111,21 @@ export default function Home() {
   }, []);
 
   const filteredArtists = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
     return allArtists.filter((artist) => {
+      const searchableFields = [
+        artist.name,
+        artist.specialty,
+        artist.country,
+        artist.city,
+        artist.experience,
+        artist.workTypes,
+        artist.languages,
+        artist.dialects,
+      ];
       const matchesSearch =
-        artist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (artist.specialty && artist.specialty.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (artist.country && artist.country.toLowerCase().includes(searchTerm.toLowerCase()));
+        !normalizedSearch ||
+        searchableFields.some((field) => field?.toLowerCase().includes(normalizedSearch));
       const matchesSpecialty =
         activeSpecialty === "الكل" ||
         artist.specialty.split(/[,،]/).map((s) => s.trim()).includes(activeSpecialty);
@@ -143,7 +153,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
-            alt="Stage Background"
+            alt="خلفية مسرحية لكواليس"
             className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
           />
