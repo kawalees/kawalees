@@ -7,7 +7,11 @@ export interface Artist {
   country: string;
   city?: string;
   experience: string;
+  ageRange?: string;
+  gender?: string;
   education?: string;
+  imageStatus?: string;
+  profileImageName?: string;
   workTypes?: string;
   languages?: string;
   dialects?: string;

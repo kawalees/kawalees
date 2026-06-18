@@ -7,6 +7,11 @@ import {
 import { AppLayout } from "@/components/layout/AppLayout";
 import { artists } from "@/data/artists";
 
+function resolveAssetUrl(url: string) {
+  if (/^(https?:|data:|blob:)/.test(url)) return url;
+  return `${import.meta.env.BASE_URL}${url.replace(/^\/+/, "")}`;
+}
+
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1">
@@ -73,7 +78,7 @@ export default function ArtistProfile() {
               <div className="aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl relative mb-6 border border-white/10">
                 {artist.imageUrl ? (
                   <img
-                    src={artist.imageUrl}
+                    src={resolveAssetUrl(artist.imageUrl)}
                     alt={artist.name}
                     className="w-full h-full object-cover"
                   />
@@ -157,6 +162,23 @@ export default function ArtistProfile() {
               </div>
 
               {/* Tags */}
+              {(artist.ageRange || artist.gender) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12">
+                  {artist.ageRange && (
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-gray-500 mb-1">الفئة العمرية</p>
+                      <p className="text-white font-medium">{artist.ageRange}</p>
+                    </div>
+                  )}
+                  {artist.gender && (
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <p className="text-xs text-gray-500 mb-1">النوع</p>
+                      <p className="text-white font-medium">{artist.gender}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {(artist.workTypes || artist.languages || artist.dialects) && (
                 <div className="flex flex-wrap gap-4 mb-12">
                   {artist.workTypes && (

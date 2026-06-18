@@ -2,6 +2,11 @@ import { Link } from "wouter";
 import { MapPin, Star, ShieldCheck } from "lucide-react";
 import type { Artist } from "@/types";
 
+function resolveAssetUrl(url: string) {
+  if (/^(https?:|data:|blob:)/.test(url)) return url;
+  return `${import.meta.env.BASE_URL}${url.replace(/^\/+/, "")}`;
+}
+
 export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isFeatured?: boolean }) {
   const primarySpecialty = artist.specialty.split(/[,،]/)[0]?.trim() ?? "";
 
@@ -13,7 +18,7 @@ export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isF
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
           {artist.imageUrl ? (
             <img
-              src={artist.imageUrl}
+              src={resolveAssetUrl(artist.imageUrl)}
               alt={artist.name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
