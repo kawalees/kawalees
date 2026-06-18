@@ -1,14 +1,12 @@
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Menu, X, Clapperboard, Users, Mail, UserPlus, Crown, LogIn, LayoutDashboard, LogOut } from "lucide-react";
-import { getDashboardPath, useAuth } from "@/hooks/useAuth";
+import { Clapperboard, Mail, Menu, UserPlus, Users, X } from "lucide-react";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
-  const { user, logout, isLoading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -22,19 +20,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, [location]);
 
   const isActive = (path: string) => location === path;
-
   const navLinks = [
     { href: "/", label: "الفنانون", icon: Users },
     { href: "/projects", label: "الكاستنج", icon: Clapperboard },
-    { href: "/pricing", label: "الباقات", icon: Crown },
     { href: "/contact", label: "تواصل معنا", icon: Mail },
   ];
 
-  const dashboardPath = getDashboardPath(user);
-
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground dark selection:bg-primary/30 selection:text-primary">
-      {/* Navigation */}
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${
           isScrolled
@@ -44,18 +37,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center gap-6">
-            {/* Logo */}
             <Link href="/" className="group flex items-center gap-2 z-50 flex-shrink-0">
               <span className="font-display font-bold text-3xl tracking-wider text-gradient-gold">كواليس</span>
             </Link>
 
-            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
               {navLinks.map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`font-display text-base transition-colors hover:text-primary flex items-center gap-1.5 ${isActive(href) ? "text-primary" : "text-gray-300"}`}
+                  className={`font-display text-base transition-colors hover:text-primary flex items-center gap-1.5 ${
+                    isActive(href) ? "text-primary" : "text-gray-300"
+                  }`}
                 >
                   <Icon size={15} />
                   {label}
@@ -63,47 +56,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               ))}
             </nav>
 
-            {/* Join CTA */}
             <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-              {!isLoading && user ? (
-                <>
-                  <Link
-                    href={dashboardPath}
-                    data-testid="link-dashboard"
-                    className={`font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
-                      isActive(dashboardPath)
-                        ? "border-primary bg-primary text-background"
-                        : "border-primary/40 text-primary hover:bg-primary/10"
-                    }`}
-                  >
-                    <LayoutDashboard size={14} />
-                    لوحة التحكم
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="font-display text-sm px-3 py-2 rounded-full border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1.5"
-                  >
-                    <LogOut size={14} />
-                    خروج
-                  </button>
-                </>
-              ) : (
-                !isLoading && (
-                  <Link
-                    href="/login"
-                    data-testid="link-login"
-                    className={`font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
-                      isActive("/login")
-                        ? "border-primary bg-primary text-background"
-                        : "border-white/15 text-gray-300 hover:border-primary/40 hover:text-primary"
-                    }`}
-                  >
-                    <LogIn size={14} />
-                    دخول
-                  </Link>
-                )
-              )}
               <Link
                 href="/join"
                 data-testid="link-join"
@@ -118,7 +71,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
               </Link>
             </div>
 
-            {/* Mobile Toggle */}
             <button
               className="md:hidden z-50 p-2 text-gray-300 hover:text-primary"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -130,7 +82,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <motion.div
           initial={false}
           animate={mobileMenuOpen ? "open" : "closed"}
@@ -145,63 +96,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 key={href}
                 href={href}
-                className={`font-display text-xl hover:text-primary flex items-center gap-2 ${isActive(href) ? "text-primary" : "text-gray-300"}`}
+                className={`font-display text-xl hover:text-primary flex items-center gap-2 ${
+                  isActive(href) ? "text-primary" : "text-gray-300"
+                }`}
               >
                 <Icon size={18} />
                 {label}
               </Link>
             ))}
-            <Link
-              href="/join"
-              className="font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2"
-            >
+            <Link href="/join" className="font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2">
               <UserPlus size={18} />
               انضم كفنان
             </Link>
-            {!isLoading && user ? (
-              <>
-                <Link
-                  href={dashboardPath}
-                  className="font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2"
-                >
-                  <LayoutDashboard size={18} />
-                  لوحة التحكم
-                </Link>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="font-display text-xl text-gray-400 hover:text-white flex items-center gap-2 text-right"
-                >
-                  <LogOut size={18} />
-                  خروج
-                </button>
-              </>
-            ) : (
-              !isLoading && (
-                <Link
-                  href="/login"
-                  className="font-display text-xl text-gray-300 hover:text-primary flex items-center gap-2"
-                >
-                  <LogIn size={18} />
-                  تسجيل الدخول
-                </Link>
-              )
-            )}
           </div>
         </motion.div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col">
-        {children}
-      </main>
+      <main className="flex-grow flex flex-col">{children}</main>
 
-      {/* Footer */}
       <footer className="border-t border-white/5 pt-14 pb-8 mt-20 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <span className="font-display font-bold text-2xl text-gradient-gold">كواليس</span>
               <p className="text-gray-500 mt-2 font-sans text-sm leading-relaxed max-w-xs">
@@ -213,7 +129,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
 
-            {/* Platform */}
             <div>
               <h4 className="text-white text-sm font-bold mb-4">المنصة</h4>
               <ul className="space-y-2.5">
@@ -223,7 +138,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
               </ul>
             </div>
 
-            {/* Contact */}
             <div>
               <h4 className="text-white text-sm font-bold mb-4">التواصل</h4>
               <ul className="space-y-2.5">
@@ -232,7 +146,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
               </ul>
             </div>
 
-            {/* Info */}
             <div>
               <h4 className="text-white text-sm font-bold mb-4">عن كواليس</h4>
               <ul className="space-y-2.5">
@@ -244,12 +157,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-gray-700 text-xs">
-              © {new Date().getFullYear()} كواليس — جميع الحقوق محفوظة
-            </p>
-            <p className="text-gray-700 text-xs">
-              منصة عربية لصناع الفن والمسرح والسينما
-            </p>
+            <p className="text-gray-700 text-xs">© {new Date().getFullYear()} كواليس — جميع الحقوق محفوظة</p>
+            <p className="text-gray-700 text-xs">منصة عربية لصناع الفن والمسرح والسينما</p>
           </div>
         </div>
       </footer>
