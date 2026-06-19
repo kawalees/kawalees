@@ -16,6 +16,18 @@ import { useToast } from "@/hooks/use-toast";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/maqaoqeo";
 
+type CloudinaryUploadResponse = {
+  secure_url?: string;
+  public_id?: string;
+  asset_id?: string;
+  version?: number;
+  bytes?: number;
+  format?: string;
+  resource_type?: string;
+  original_filename?: string;
+  error?: { message?: string };
+};
+
 // ─── Specialty Groups ──────────────────────────────────────────
 const SPECIALTY_GROUPS = [
   {
@@ -199,13 +211,29 @@ async function getCroppedImg(imageSrc: string, pixelCrop: CropArea, rotation = 0
   });
 }
 
-function fileToDataUrl(selectedFile: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => resolve(String(reader.result || "")));
-    reader.addEventListener("error", () => reject(new Error("Image read failed")));
-    reader.readAsDataURL(selectedFile);
+async function uploadProfileImageToCloudinary(selectedFile: File): Promise<CloudinaryUploadResponse> {
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME?.trim();
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET?.trim();
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error("إعدادات رفع الصور غير مفعّلة بعد. أضف Cloudinary cloud name و unsigned upload preset قبل استقبال الطلبات الرسمية.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("upload_preset", uploadPreset);
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: "POST",
+    body: formData,
   });
+
+  const data = await response.json() as CloudinaryUploadResponse;
+  if (!response.ok || !data.secure_url) {
+    throw new Error(data.error?.message || "تعذر رفع الصورة الشخصية. يرجى المحاولة مرة أخرى.");
+  }
+
+  return data;
 }
 
 // ─── Crop Modal Component ─────────────────────────────────────
@@ -558,11 +586,18 @@ Portfolio: ${portfolioLinks.trim()}
       formData.append("languages", languages.trim());
       formData.append("dialects", dialects.trim());
 
-      if (file) {
-        formData.append("profileImageDataUrl", await fileToDataUrl(file));
-        formData.append("profileImageName", file.name);
-        formData.append("imageStatus", "تم حفظ الصورة الشخصية داخل بيانات الطلب");
+      if (!file) {
+        throw new Error("الصورة الشخصية مطلوبة");
       }
+
+      const uploadedImage = await uploadProfileImageToCloudinary(file);
+      formData.append("profileImageUrl", uploadedImage.secure_url || "");
+      formData.append("profileImagePublicId", uploadedImage.public_id || "");
+      formData.append("profileImageAssetId", uploadedImage.asset_id || "");
+      formData.append("profileImageName", file.name);
+      formData.append("profileImageBytes", String(uploadedImage.bytes || file.size));
+      formData.append("profileImageFormat", uploadedImage.format || "jpg");
+      formData.append("imageStatus", "تم رفع الصورة الشخصية إلى Cloudinary وإرفاق رابطها داخل الطلب");
 
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
@@ -701,12 +736,12 @@ Portfolio: ${portfolioLinks.trim()}
                       {!preview ? (
                         <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading}
                           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white/20 text-sm transition-colors disabled:opacity-40">
-                          <Upload size={15} />{isUploading ? "جاري الرفع..." : "رفع صورة"}
+                          <Upload size={15} />{isUploading ? "جاري التحضير..." : "اختيار صورة"}
                         </button>
                       ) : (
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-green-400 text-xs flex items-center gap-1">
-                            <CheckCircle2 size={12} />تم الرفع بنجاح
+                            <CheckCircle2 size={12} />تم تجهيز الصورة
                           </span>
                           {/* Re-crop button */}
                           <button
@@ -722,7 +757,9 @@ Portfolio: ${portfolioLinks.trim()}
                         </div>
                       )}
                       {(uploadError || errors.image) && <p className={errCls}><AlertCircle size={11} />{uploadError || errors.image}</p>}
-                      <p className="text-gray-600 text-xs">صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB)</p>
+                      <p className="text-gray-600 text-xs">
+                        صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB). سيتم رفعها عند إرسال الطلب وتخزين رابطها.
+                      </p>
                     </div>
                   </div>
                   <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"

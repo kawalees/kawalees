@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, User, Building, Briefcase, MessageSquare } from "lucide-react";
+import { Send, CheckCircle2, User, Building, Briefcase, MessageSquare, Mail, Phone } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { artists } from "@/data/artists";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
+const REQUEST_TYPES = ["استفسار عام", "طلب فنان", "نشر فرصة كاستنج", "تعاون / شراكة"];
 
 const inputClasses =
   "w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 font-sans";
@@ -14,9 +15,13 @@ const labelClasses = "block text-sm font-medium text-gray-400 mb-2 font-display"
 export default function ContactRequest() {
   const queryParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
   const preSelectedArtist = queryParams.get("artist") || "";
+  const hasArtists = artists.length > 0;
 
+  const [requestType, setRequestType] = useState(preSelectedArtist ? "طلب فنان" : REQUEST_TYPES[0]);
   const [artistName, setArtistName] = useState(preSelectedArtist);
   const [requesterName, setRequesterName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [projectType, setProjectType] = useState("");
   const [message, setMessage] = useState("");
@@ -27,7 +32,15 @@ export default function ContactRequest() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!artistName || !requesterName || !projectType || message.length < 10) {
+    if (
+      !requestType ||
+      !requesterName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      message.trim().length < 10 ||
+      (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) ||
+      (phone.trim() && phone.trim().length < 7)
+    ) {
       setError("الرجاء تعبئة جميع الحقول المطلوبة بشكل صحيح.");
       return;
     }
@@ -36,7 +49,18 @@ export default function ContactRequest() {
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ artistName, requesterName, company, projectType, message }),
+        body: JSON.stringify({
+          requestType,
+          artistName: artistName || "لا يوجد فنان محدد / طلب ترشيح مناسب",
+          requesterName: requesterName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          company: company.trim(),
+          projectType: projectType.trim(),
+          message: message.trim(),
+          _replyto: email.trim(),
+          _subject: `Kawalees contact request - ${requestType}`,
+        }),
       });
       if (res.ok) {
         setSuccess(true);
@@ -75,7 +99,7 @@ export default function ContactRequest() {
             </div>
             <h2 className="text-3xl font-display font-bold text-white mb-4">تم إرسال طلبك بنجاح!</h2>
             <p className="text-gray-400 text-lg mb-8 max-w-lg mx-auto">
-              سيقوم فريق كواليس بمراجعة طلبك والتواصل مع الفنان. سنتواصل معك قريبًا.
+              سيقوم فريق كواليس بمراجعة طلبك والتواصل معك عبر البريد أو الهاتف المذكورين.
             </p>
             <Link
               href="/"
@@ -97,29 +121,27 @@ export default function ContactRequest() {
               <div className="space-y-6">
                 <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">المعلومات الأساسية</h3>
 
-                {/* Artist Selection */}
-                <div>
-                  <label className={labelClasses}>اختر الفنان المطلوب *</label>
-                  <div className="relative">
-                    <select
-                      value={artistName}
-                      onChange={(e) => setArtistName(e.target.value)}
-                      className={`${inputClasses} appearance-none pr-10`}
-                    >
-                      <option value="" className="bg-zinc-900">-- اختر فناناً --</option>
-                      {artists.map((a) => (
-                        <option key={a.id} value={a.name} className="bg-zinc-900">
-                          {a.name} ({a.specialty.split(/[,،]/)[0]?.trim()})
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                      <User className="text-gray-500" size={18} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className={labelClasses}>نوع الطلب *</label>
+                    <div className="relative">
+                      <select
+                        value={requestType}
+                        onChange={(e) => setRequestType(e.target.value)}
+                        className={`${inputClasses} appearance-none pr-10`}
+                      >
+                        {REQUEST_TYPES.map((type) => (
+                          <option key={type} value={type} className="bg-zinc-900">
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <Briefcase className="text-gray-500" size={18} />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className={labelClasses}>اسمك الكامل *</label>
                     <div className="relative">
@@ -132,6 +154,38 @@ export default function ContactRequest() {
                       />
                       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                         <User className="text-gray-500" size={18} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClasses}>البريد الإلكتروني *</label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`${inputClasses} pr-10`}
+                        placeholder="name@example.com"
+                      />
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <Mail className="text-gray-500" size={18} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClasses}>رقم الهاتف / واتساب *</label>
+                    <div className="relative">
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className={`${inputClasses} pr-10`}
+                        placeholder="+974 5x xxx xxxx"
+                      />
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <Phone className="text-gray-500" size={18} />
                       </div>
                     </div>
                   </div>
@@ -151,6 +205,29 @@ export default function ContactRequest() {
                       </div>
                     </div>
                   </div>
+
+                  <div>
+                    <label className={labelClasses}>الفنان المطلوب <span className="text-gray-600 text-xs">(اختياري)</span></label>
+                    <div className="relative">
+                      <select
+                        value={artistName}
+                        onChange={(e) => setArtistName(e.target.value)}
+                        className={`${inputClasses} appearance-none pr-10`}
+                      >
+                        <option value="" className="bg-zinc-900">
+                          {hasArtists ? "لا يوجد فنان محدد / أريد ترشيح مناسب" : "لا يوجد فنان منشور بعد / أريد تواصلاً عاماً"}
+                        </option>
+                        {artists.map((a) => (
+                          <option key={a.id} value={a.name} className="bg-zinc-900">
+                            {a.name} ({a.specialty.split(/[,،]/)[0]?.trim()})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <User className="text-gray-500" size={18} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -158,14 +235,14 @@ export default function ContactRequest() {
                 <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">تفاصيل المشروع</h3>
 
                 <div>
-                  <label className={labelClasses}>نوع المشروع *</label>
+                  <label className={labelClasses}>نوع المشروع / الاحتياج <span className="text-gray-600 text-xs">(اختياري)</span></label>
                   <div className="relative">
                     <input
                       type="text"
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
                       className={`${inputClasses} pr-10`}
-                      placeholder="مسرحية، فيلم قصير، إعلان..."
+                      placeholder="مسرحية، فيلم قصير، إعلان، تعاون..."
                     />
                     <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                       <Briefcase className="text-gray-500" size={18} />
@@ -174,14 +251,14 @@ export default function ContactRequest() {
                 </div>
 
                 <div>
-                  <label className={labelClasses}>تفاصيل العرض / الرسالة *</label>
+                  <label className={labelClasses}>تفاصيل الطلب / الرسالة *</label>
                   <div className="relative">
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={5}
                       className={`${inputClasses} pr-10 resize-none`}
-                      placeholder="اشرح باختصار طبيعة العمل ودور الفنان المطلوب..."
+                      placeholder="اشرح باختصار ما تحتاجه، وسنرد عليك عبر البريد أو الهاتف..."
                     />
                     <div className="absolute top-4 right-3 flex items-start pointer-events-none">
                       <MessageSquare className="text-gray-500" size={18} />
@@ -208,7 +285,7 @@ export default function ContactRequest() {
                   )}
                 </button>
                 <p className="text-center text-gray-500 text-xs mt-4">
-                  بياناتك آمنة. لن يتم مشاركة معلومات التواصل الخاصة بالفنانين مباشرة.
+                  بياناتك تستخدم فقط للرد على طلبك وترتيب التواصل المناسب عبر كواليس.
                 </p>
               </div>
             </form>
