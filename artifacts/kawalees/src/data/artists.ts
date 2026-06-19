@@ -4,7 +4,7 @@ export const artists: Artist[] = [
   {
     id: "1",
     name: "ليلى المنصور",
-    imageUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
+    imageUrl: "/artists/layla-almansour.jpg",
     specialty: "ممثلة مسرحية، ممثلة سينمائية",
     featured: true,
     country: "الكويت",
@@ -26,7 +26,7 @@ export const artists: Artist[] = [
   {
     id: "2",
     name: "خالد العمري",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
+    imageUrl: "/artists/khaled-alomari.jpg",
     specialty: "مخرج مسرحي، مخرج سينمائي",
     featured: true,
     country: "الأردن",
@@ -47,7 +47,7 @@ export const artists: Artist[] = [
   {
     id: "3",
     name: "سارة الجابر",
-    imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
+    imageUrl: "/artists/sara-aljaber.jpg",
     specialty: "ممثلة تلفزيونية، ممثلة صوت ودبلجة",
     country: "السعودية",
     city: "الرياض",
@@ -66,7 +66,7 @@ export const artists: Artist[] = [
   {
     id: "4",
     name: "أحمد الزغبي",
-    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    imageUrl: "/artists/ahmad-alzoghbi.jpg",
     specialty: "ممثل مسرحي، مؤدي حركي",
     country: "مصر",
     city: "القاهرة",
@@ -85,7 +85,7 @@ export const artists: Artist[] = [
   {
     id: "5",
     name: "منى الشريف",
-    imageUrl: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&q=80",
+    imageUrl: "/artists/mona-alsharif.jpg",
     specialty: "كاتبة مسرحية، دراماتورج",
     country: "لبنان",
     city: "بيروت",
@@ -104,7 +104,7 @@ export const artists: Artist[] = [
   {
     id: "6",
     name: "عمر الحسن",
-    imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
+    imageUrl: "/artists/omar-alhasan.jpg",
     specialty: "مخرج تلفزيوني، مخرج ثانٍ",
     country: "الإمارات",
     city: "دبي",
@@ -122,7 +122,7 @@ export const artists: Artist[] = [
   {
     id: "7",
     name: "نور الدين سعيدي",
-    imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80",
+    imageUrl: "/artists/nour-saeedi.jpg",
     specialty: "مصمم إضاءة، مصمم ديكور",
     country: "تونس",
     city: "تونس",
@@ -141,7 +141,7 @@ export const artists: Artist[] = [
   {
     id: "8",
     name: "هدى الوزاني",
-    imageUrl: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80",
+    imageUrl: "/artists/huda-alwazzani.jpg",
     specialty: "راقصة، فنانة رقص معاصر",
     country: "المغرب",
     city: "الدار البيضاء",
@@ -160,7 +160,7 @@ export const artists: Artist[] = [
   {
     id: "9",
     name: "باسل يونس",
-    imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80",
+    imageUrl: "/artists/basel-younes.jpg",
     specialty: "ممثل سينمائي، قصاص",
     country: "سوريا",
     city: "دمشق",
@@ -178,7 +178,7 @@ export const artists: Artist[] = [
   {
     id: "10",
     name: "فاطمة العلوي",
-    imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
+    imageUrl: "/artists/fatima-alalawi.jpg",
     specialty: "ممثلة مسرحية، معلمة تمثيل",
     featured: true,
     country: "المغرب",
@@ -198,7 +198,7 @@ export const artists: Artist[] = [
   {
     id: "11",
     name: "طارق المصري",
-    imageUrl: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=600&q=80",
+    imageUrl: "/artists/tareq-almasri.jpg",
     specialty: "ممثل كوميدي، مؤدي أحادي",
     country: "مصر",
     city: "الإسكندرية",
@@ -216,7 +216,7 @@ export const artists: Artist[] = [
   {
     id: "12",
     name: "رنا القادري",
-    imageUrl: "https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?w=600&q=80",
+    imageUrl: "/artists/rana-alqadri.jpg",
     specialty: "مصممة أزياء مسرحية، مصممة ماكياج",
     country: "العراق",
     city: "بغداد",

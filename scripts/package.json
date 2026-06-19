@@ -4,13 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "audit-static": "tsx ./src/static-audit.ts",
+    "deploy-static": "tsx ./src/deploy-static.ts",
     "hello": "tsx ./src/hello.ts",
-    "seed-artists": "tsx ./src/seed-artists.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "dependencies": {
-    "@workspace/db": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "catalog:",
     "tsx": "catalog:"

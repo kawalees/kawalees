@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "preview": "vite preview"
+    "audit:static": "pnpm --filter @workspace/scripts audit-static",
+    "build": "pnpm --filter kawalees-frontend build",
+    "deploy:static": "pnpm --filter @workspace/scripts deploy-static",
+    "dev": "pnpm --filter kawalees-frontend dev",
+    "preview": "pnpm --filter kawalees-frontend preview",
+    "typecheck": "pnpm --filter kawalees-frontend typecheck"
   },
   "private": true,
   "devDependencies": {

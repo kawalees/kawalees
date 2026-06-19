@@ -1,10 +1,7 @@
 modules = ["nodejs-24"]
 
 [[artifacts]]
-id = "artifacts/api-server"
-
-[[artifacts]]
-id = "artifacts/mockup-sandbox"
+id = "artifacts/kawalees"
 
 [deployment]
 router = "application"
@@ -29,13 +26,5 @@ timeoutMs = 20000
 packages = ["zip", "tree"]
 
 [[ports]]
-localPort = 8080
-externalPort = 8080
-
-[[ports]]
-localPort = 8081
-externalPort = 8081
-
-[[ports]]
-localPort = 18269
+localPort = 4173
 externalPort = 80

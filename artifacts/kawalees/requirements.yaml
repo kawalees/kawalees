@@ -1,9 +1,8 @@
 packages:
   "framer-motion": "For smooth cinematic page transitions and element animations"
-  "react-hook-form": "For handling the contact request form"
-  "@hookform/resolvers": "For Zod validation integration with react-hook-form"
   "embla-carousel-react": "For the featured artists horizontal slider"
   "embla-carousel-autoplay": "For auto-playing the featured artists slider"
+  "react-easy-crop": "For client-side profile image cropping before Formspree submission"
 
 images:
   - path: "artifacts/kawalees/public/images/hero-bg.png"
@@ -12,5 +11,6 @@ images:
 
 notes:
   - Application requires a strict RTL layout (Arabic)
-  - Data hooks are already generated in @workspace/api-client-react
+  - All approved artists and projects are edited manually in src/data
+  - Forms use Formspree because GitHub Pages is static-only
   - Force dark mode theme for all components
