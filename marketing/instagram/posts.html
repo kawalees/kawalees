@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>منشورات كواليس التسويقية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0b0b;
+        --panel: rgba(255, 255, 255, 0.055);
+        --panel-strong: rgba(255, 255, 255, 0.09);
+        --gold: #c8a96a;
+        --gold-2: #e5c78a;
+        --muted: #a8a8a8;
+        --white: #f8f8f8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 48px;
+        background: #161616;
+        font-family: "Tajawal", Arial, sans-serif;
+        color: var(--white);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 32px;
+      }
+
+      .post {
+        width: 1080px;
+        height: 1080px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 16%, rgba(200, 169, 106, 0.22), transparent 34%),
+          radial-gradient(circle at 82% 86%, rgba(200, 169, 106, 0.16), transparent 32%),
+          linear-gradient(145deg, #050505 0%, #0b0b0b 42%, #17130c 100%);
+        border: 1px solid rgba(200, 169, 106, 0.28);
+        transform-origin: top right;
+      }
+
+      .post::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at center, black, transparent 78%);
+        opacity: 0.45;
+      }
+
+      .post::after {
+        content: "";
+        position: absolute;
+        inset: 38px;
+        border: 1px solid rgba(200, 169, 106, 0.18);
+        border-radius: 34px;
+        pointer-events: none;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        padding: 82px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: auto;
+      }
+
+      .logo {
+        font-family: "Cairo", sans-serif;
+        font-size: 52px;
+        font-weight: 900;
+        letter-spacing: 0;
+        color: transparent;
+        background: linear-gradient(90deg, var(--gold), var(--gold-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .tag {
+        border: 1px solid rgba(200, 169, 106, 0.34);
+        background: rgba(200, 169, 106, 0.1);
+        color: var(--gold-2);
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-size: 24px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        width: fit-content;
+        color: var(--gold-2);
+        font-size: 27px;
+        font-weight: 800;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 42px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold));
+      }
+
+      h1 {
+        font-family: "Cairo", sans-serif;
+        margin: 0;
+        color: var(--white);
+        font-size: 86px;
+        line-height: 1.16;
+        letter-spacing: 0;
+        max-width: 850px;
+      }
+
+      .lead {
+        margin: 32px 0 0;
+        color: #d8d8d8;
+        font-size: 34px;
+        line-height: 1.55;
+        max-width: 800px;
+        font-weight: 500;
+      }
+
+      .highlight {
+        color: transparent;
+        background: linear-gradient(90deg, var(--gold), var(--gold-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .bottom {
+        margin-top: auto;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 32px;
+      }
+
+      .cta {
+        background: linear-gradient(90deg, var(--gold), var(--gold-2));
+        color: #080808;
+        border-radius: 24px;
+        padding: 24px 34px;
+        font-size: 30px;
+        font-weight: 900;
+        font-family: "Cairo", sans-serif;
+        box-shadow: 0 18px 48px rgba(200, 169, 106, 0.2);
+      }
+
+      .url {
+        color: var(--muted);
+        font-size: 25px;
+        direction: ltr;
+        text-align: left;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-top: 48px;
+        max-width: 790px;
+      }
+
+      .mini-card {
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 28px;
+        padding: 26px;
+        min-height: 150px;
+      }
+
+      .mini-card strong {
+        color: var(--gold-2);
+        display: block;
+        font-size: 29px;
+        margin-bottom: 8px;
+        font-family: "Cairo", sans-serif;
+      }
+
+      .mini-card span {
+        color: #cfcfcf;
+        display: block;
+        font-size: 24px;
+        line-height: 1.35;
+      }
+
+      .number {
+        position: absolute;
+        left: 82px;
+        top: 150px;
+        font-family: "Cairo", sans-serif;
+        font-size: 190px;
+        font-weight: 900;
+        line-height: 1;
+        color: rgba(200, 169, 106, 0.08);
+      }
+
+      .spotlight {
+        position: absolute;
+        width: 360px;
+        height: 640px;
+        left: 82px;
+        bottom: -120px;
+        background: linear-gradient(180deg, rgba(229, 199, 138, 0.26), transparent 72%);
+        clip-path: polygon(42% 0, 58% 0, 100% 100%, 0% 100%);
+        filter: blur(1px);
+        opacity: 0.65;
+      }
+
+      .quote {
+        margin-top: 48px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(200, 169, 106, 0.24);
+        border-radius: 32px;
+        padding: 34px 40px;
+        color: #eeeeee;
+        font-size: 35px;
+        line-height: 1.55;
+        max-width: 790px;
+        font-weight: 700;
+      }
+
+      .steps {
+        display: grid;
+        gap: 18px;
+        margin-top: 50px;
+        max-width: 760px;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 22px 26px;
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        font-size: 29px;
+        font-weight: 800;
+      }
+
+      .step b {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(200, 169, 106, 0.18);
+        color: var(--gold-2);
+        font-family: "Cairo", sans-serif;
+      }
+
+      .photo-strip {
+        position: absolute;
+        left: 72px;
+        bottom: 190px;
+        width: 240px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .photo-box {
+        height: 142px;
+        border-radius: 24px;
+        background:
+          linear-gradient(135deg, rgba(200, 169, 106, 0.36), transparent),
+          var(--panel-strong);
+        border: 1px solid rgba(200, 169, 106, 0.22);
+      }
+
+      .post[data-scale="preview"] {
+        transform: scale(0.36);
+      }
+
+      body.export-mode {
+        width: 1080px;
+        height: 1080px;
+        padding: 0;
+        display: block;
+        overflow: hidden;
+        background: #050505;
+      }
+
+      body.export-mode .post {
+        display: none;
+      }
+
+      body.export-mode .post.is-export-target {
+        display: block;
+        position: fixed;
+        inset: 0 auto auto 0;
+        margin: 0;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <article class="post" id="post-01">
+      <div class="spotlight"></div>
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">منصة الفنانين العرب</div></div>
+        <div>
+          <div class="eyebrow">اكتشف المواهب خلف الكواليس</div>
+          <h1>دليل عربي يجمع <span class="highlight">الفنانين</span> وصنّاع الفن</h1>
+          <p class="lead">مساحة احترافية للتعريف بالمواهب وربطها بفرص المسرح والسينما والإنتاج.</p>
+        </div>
+        <div class="bottom"><div class="cta">اكتشف كواليس</div><div class="url">kawalees.github.io/kawalees</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-02">
+      <div class="number">01</div>
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">دعوة للفنانين</div></div>
+        <div>
+          <div class="eyebrow">انضم إلى الدليل</div>
+          <h1>ملفك الفني يستحق أن يُرى</h1>
+          <p class="lead">أرسل بياناتك وصورتك وروابط أعمالك، وسنراجعها لإضافتك إلى دليل كواليس.</p>
+        </div>
+        <div class="bottom"><div class="cta">انضم كفنان</div><div class="url">/join</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-03">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">بروفايل احترافي</div></div>
+        <div>
+          <div class="eyebrow">عرّف بنفسك</div>
+          <h1>اسمك، تخصصك، أعمالك… في صفحة واحدة</h1>
+          <div class="cards">
+            <div class="mini-card"><strong>الصورة</strong><span>حضور بصري واضح</span></div>
+            <div class="mini-card"><strong>التخصص</strong><span>تمثيل، إخراج، كتابة وأكثر</span></div>
+            <div class="mini-card"><strong>الأعمال</strong><span>روابط وسيرة مختصرة</span></div>
+            <div class="mini-card"><strong>التواصل</strong><span>طلب تواصل منظم</span></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="cta">جهّز ملفك الآن</div><div class="url">كواليس</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-04">
+      <div class="photo-strip"><div class="photo-box"></div><div class="photo-box"></div><div class="photo-box"></div></div>
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">لشركات الإنتاج</div></div>
+        <div>
+          <div class="eyebrow">ابحث عن المواهب</div>
+          <h1>اختصر وقت البحث عن الفنان المناسب</h1>
+          <p class="lead">تصفّح الدليل، راجع التخصصات، واطلب التواصل مع الفنانين المناسبين لمشروعك القادم.</p>
+        </div>
+        <div class="bottom"><div class="cta">اطلب فناناً</div><div class="url">/contact</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-05">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">الكاستنج</div></div>
+        <div>
+          <div class="eyebrow">فرص للمواهب العربية</div>
+          <h1>من المسرح إلى الشاشة… الفرصة تبدأ من هنا</h1>
+          <p class="lead">تابع فرص الكاستنج المفتوحة وتعرّف على المشاريع التي تبحث عن مواهب جديدة.</p>
+        </div>
+        <div class="bottom"><div class="cta">تصفّح الكاستنج</div><div class="url">/projects</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-06">
+      <div class="number">✓</div>
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">تحرير يدوي</div></div>
+        <div>
+          <div class="eyebrow">دليل منسق بعناية</div>
+          <h1>كل ملف يمر بمراجعة قبل النشر</h1>
+          <p class="lead">نحافظ على جودة الدليل عبر إضافة الفنانين والمشاريع يدوياً بعد مراجعة البيانات.</p>
+        </div>
+        <div class="bottom"><div class="cta">دليل موثوق</div><div class="url">كواليس</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-07">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">٣ خطوات</div></div>
+        <div>
+          <div class="eyebrow">كيف تنضم؟</div>
+          <h1>رحلة بسيطة إلى الظهور الاحترافي</h1>
+          <div class="steps">
+            <div class="step"><b>١</b><span>أرسل بياناتك الفنية</span></div>
+            <div class="step"><b>٢</b><span>تتم مراجعة الملف</span></div>
+            <div class="step"><b>٣</b><span>نضيفك إلى الدليل</span></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="cta">ابدأ الآن</div><div class="url">/join</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-08">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">للفرق المسرحية</div></div>
+        <div>
+          <div class="eyebrow">فرقتك ضمن المشهد</div>
+          <h1>عرّف الجمهور وصنّاع الإنتاج بفريقك</h1>
+          <p class="lead">كواليس مساحة للفرق المسرحية والفنية لعرض هويتها ومشاريعها ومواهبها.</p>
+        </div>
+        <div class="bottom"><div class="cta">أرسل بيانات الفرقة</div><div class="url">/join</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-09">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">للعالم العربي</div></div>
+        <div>
+          <div class="eyebrow">مواهب من كل مكان</div>
+          <h1>من الخليج إلى المغرب… الفن يجمعنا</h1>
+          <p class="lead">دليل عربي يفتح مساحة أوسع للتعارف المهني بين الفنانين وصنّاع الأعمال.</p>
+        </div>
+        <div class="bottom"><div class="cta">كن جزءاً من كواليس</div><div class="url">kawalees</div></div>
+      </div>
+    </article>
+
+    <article class="post" id="post-10">
+      <div class="content">
+        <div class="brand"><div class="logo">كواليس</div><div class="tag">ابدأ اليوم</div></div>
+        <div>
+          <div class="eyebrow">دعوة مفتوحة</div>
+          <h1>هل أنت فنان؟ دع أعمالك تتكلم عنك</h1>
+          <div class="quote">انضم إلى كواليس وامنح ملفك حضوراً يليق بموهبتك.</div>
+        </div>
+        <div class="bottom"><div class="cta">انضم الآن</div><div class="url">/join</div></div>
+      </div>
+    </article>
+    <script>
+      const exportPostId = new URLSearchParams(window.location.search).get("post");
+      if (exportPostId) {
+        const exportPost = document.getElementById(exportPostId);
+        if (exportPost) {
+          document.body.classList.add("export-mode");
+          exportPost.classList.add("is-export-target");
+        }
+      }
+    </script>
+  </body>
+</html>
