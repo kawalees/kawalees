@@ -95,6 +95,10 @@ export default function Home() {
 
   const featuredArtists = useMemo(() => allArtists.filter((a) => a.featured), []);
   const totalArtists = allArtists.length;
+  const totalCountries = useMemo(
+    () => new Set(allArtists.map((artist) => artist.country).filter(Boolean)).size,
+    []
+  );
   const hasArtists = totalArtists > 0;
 
   const specialties = useMemo(() => {
@@ -225,11 +229,11 @@ export default function Home() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="grid grid-cols-3 gap-6 text-center">
               <div>
-                <p className="font-display text-4xl font-bold text-primary">{totalArtists}+</p>
+                <p className="font-display text-4xl font-bold text-primary">{totalArtists}</p>
                 <p className="text-gray-400 text-sm mt-1">فنان محترف</p>
               </div>
               <div>
-                <p className="font-display text-4xl font-bold text-primary">10+</p>
+                <p className="font-display text-4xl font-bold text-primary">{totalCountries}</p>
                 <p className="text-gray-400 text-sm mt-1">دول مشاركة</p>
               </div>
               <div>
