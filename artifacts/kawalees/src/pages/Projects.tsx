@@ -17,6 +17,7 @@ export default function Projects() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("all");
   const [typeFilter, setTypeFilter] = useState<string>("الكل");
+  const hasProjects = allProjects.length > 0;
 
   const types = useMemo(() => {
     const ts = new Set(allProjects.map((p) => p.type));
@@ -42,6 +43,9 @@ export default function Projects() {
       return matchesSearch && matchesStatus && matchesType;
     });
   }, [search, statusFilter, typeFilter]);
+
+  const hasActiveFilters = Boolean(search.trim()) || statusFilter !== "all" || typeFilter !== "الكل";
+  const isEmptyProjectBoard = !hasActiveFilters && !hasProjects;
 
   return (
     <AppLayout>
@@ -129,13 +133,22 @@ export default function Projects() {
         {filtered.length === 0 && (
           <div className="text-center py-20 border border-dashed border-white/10 rounded-2xl">
             <Clapperboard className="mx-auto text-gray-600 mb-4" size={48} />
-            <p className="text-gray-400 text-lg mb-2">لا توجد نتائج مطابقة</p>
-            <button
-              onClick={() => { setSearch(""); setStatusFilter("all"); setTypeFilter("الكل"); }}
-              className="mt-2 text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              مسح الفلاتر
-            </button>
+            <p className="text-gray-400 text-lg mb-2">
+              {isEmptyProjectBoard ? "لا توجد فرص كاستنج منشورة بعد" : "لا توجد نتائج مطابقة"}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {isEmptyProjectBoard
+                ? "ستظهر هنا فرص الكاستنج الرسمية بعد مراجعتها وإضافتها."
+                : "جرّب تغيير كلمات البحث أو الفلاتر."}
+            </p>
+            {hasActiveFilters && (
+              <button
+                onClick={() => { setSearch(""); setStatusFilter("all"); setTypeFilter("الكل"); }}
+                className="mt-2 text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                مسح الفلاتر
+              </button>
+            )}
           </div>
         )}
 

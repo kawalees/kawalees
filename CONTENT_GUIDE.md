@@ -11,14 +11,14 @@ All approved content is edited manually, built, and published to `docs`.
    `artifacts/kawalees/src/data/artists.ts`
 3. Add or update one artist object.
 4. Use a stable URL-safe `id`, for example:
-   `ahmad-alrawani`
+   `artist-name`
 5. Reference local images like:
-   `/artists/ahmad-alrawani.jpg`
+   `/artists/artist-name.jpg`
 6. Run the static deploy command:
    `pnpm deploy:static`
 
 Artist profile URLs are generated from the `id`:
-`/kawalees/artist/ahmad-alrawani`
+`/kawalees/artist/artist-name`
 
 ## Add Or Update A Project
 

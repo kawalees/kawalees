@@ -53,9 +53,9 @@ const USER_TYPES = [
   {
     icon: Building2,
     title: "شركات الإنتاج",
-    color: "text-blue-400",
-    bg: "bg-blue-400/5",
-    border: "border-blue-400/20",
+    color: "text-primary",
+    bg: "bg-primary/5",
+    border: "border-primary/20",
     items: [
       "تصفّح دليل الفنانين المعتمدين",
       "طلب تواصل مع أي فنان",
@@ -68,9 +68,9 @@ const USER_TYPES = [
   {
     icon: Users,
     title: "الفرق المسرحية",
-    color: "text-purple-400",
-    bg: "bg-purple-400/5",
-    border: "border-purple-400/20",
+    color: "text-primary",
+    bg: "bg-primary/5",
+    border: "border-primary/20",
     items: [
       "بروفايل مخصص للفرقة",
       "نشر فرص العضوية والأدوار",
@@ -95,6 +95,7 @@ export default function Home() {
 
   const featuredArtists = useMemo(() => allArtists.filter((a) => a.featured), []);
   const totalArtists = allArtists.length;
+  const hasArtists = totalArtists > 0;
 
   const specialties = useMemo(() => {
     const specs = new Set(
@@ -138,6 +139,7 @@ export default function Home() {
   const visibleArtists = filteredArtists.slice(0, visibleCount);
   const hasMore = visibleCount < filteredArtists.length;
   const hasActiveFilters = searchTerm || activeSpecialty !== "الكل" || activeCountry !== "الكل";
+  const isEmptyDirectory = !hasActiveFilters && !hasArtists;
 
   function clearFilters() {
     setSearchTerm("");
@@ -204,23 +206,21 @@ export default function Home() {
               </Link>
               <Link
                 href="/projects"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 text-gray-200 rounded-xl hover:border-white/40 hover:bg-white/5 transition-all"
+                className="group inline-flex items-center gap-3 px-5 py-3 border border-white/20 text-gray-200 rounded-xl hover:border-primary/40 hover:bg-primary/10 hover:text-white transition-all"
               >
                 تصفّح الكاستنج
-                <ArrowLeft size={16} />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/5 text-primary transition-all group-hover:-translate-x-0.5 group-hover:border-primary/40 group-hover:bg-primary/15">
+                  <ArrowLeft size={15} />
+                </span>
               </Link>
             </div>
           </motion.div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-30">
-          <div className="w-px h-8 bg-white/40" />
-          <ChevronDown size={16} className="text-white" />
-        </div>
       </section>
 
       {/* ── Stats Band ───────────────────────────────────── */}
-      {!hasActiveFilters && (
+      {hasArtists && !hasActiveFilters && (
         <section className="py-10 border-y border-white/5 bg-zinc-950/40">
           <div className="max-w-4xl mx-auto px-4">
             <div className="grid grid-cols-3 gap-6 text-center">
@@ -250,7 +250,6 @@ export default function Home() {
               <p className="text-gray-400 max-w-lg mx-auto">ثلاث خطوات بسيطة تفصلك عن عالم الاحترافية</p>
             </div>
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="hidden md:block absolute top-10 right-[calc(33%+2rem)] left-[calc(33%+2rem)] h-px bg-gradient-to-l from-primary/30 via-primary/10 to-primary/30" />
               {HOW_IT_WORKS.map(({ step, icon: Icon, title, desc }) => (
                 <motion.div
                   key={step}
@@ -417,14 +416,22 @@ export default function Home() {
               <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
                 <UserX size={32} className="text-gray-500" />
               </div>
-              <h3 className="text-2xl font-display font-bold text-white mb-2">لم نجد نتائج مطابقة</h3>
-              <p className="text-gray-400 max-w-md">حاول البحث بكلمات مختلفة أو تغيير إعدادات التصفية.</p>
-              <button
-                onClick={clearFilters}
-                className="mt-6 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary/10 transition-colors"
-              >
-                مسح عوامل التصفية
-              </button>
+              <h3 className="text-2xl font-display font-bold text-white mb-2">
+                {isEmptyDirectory ? "الدليل جاهز لاستقبال الملفات الرسمية" : "لم نجد نتائج مطابقة"}
+              </h3>
+              <p className="text-gray-400 max-w-md">
+                {isEmptyDirectory
+                  ? "لم يتم نشر أي فنان بعد. ستظهر هنا الملفات المعتمدة بعد مراجعتها وإضافتها رسميًا."
+                  : "حاول البحث بكلمات مختلفة أو تغيير إعدادات التصفية."}
+              </p>
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="mt-6 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary/10 transition-colors"
+                >
+                  مسح عوامل التصفية
+                </button>
+              )}
             </motion.div>
           ) : (
             <>
