@@ -7,13 +7,22 @@ function resolveAssetUrl(url: string) {
   return `${import.meta.env.BASE_URL}${url.replace(/^\/+/, "")}`;
 }
 
-export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isFeatured?: boolean }) {
+export function ArtistCard({
+  artist,
+  isFeatured = false,
+}: {
+  artist: Artist;
+  isFeatured?: boolean;
+}) {
   const primarySpecialty = artist.specialty.split(/[,،]/)[0]?.trim() ?? "";
 
   return (
-    <Link href={`/artist/${artist.id}`} className="group block h-full">
+    <Link
+      href={`/artist/${artist.id}`}
+      aria-label={`عرض ملف ${artist.name}`}
+      className="group block h-full"
+    >
       <div className="relative h-full flex flex-col bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(200,169,106,0.15)]">
-
         {/* Image */}
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
           {artist.imageUrl ? (
@@ -25,7 +34,9 @@ export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isF
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-zinc-900">
-              <span className="text-5xl text-primary/20 font-display">{artist.name.charAt(0)}</span>
+              <span className="text-5xl text-primary/20 font-display">
+                {artist.name.charAt(0)}
+              </span>
             </div>
           )}
 
@@ -51,12 +62,15 @@ export function ArtistCard({ artist, isFeatured = false }: { artist: Artist; isF
             <h3 className="font-display font-bold text-xl text-white mb-0.5 group-hover:text-primary transition-colors leading-tight">
               {artist.name}
             </h3>
-            <p className="text-primary font-medium text-xs mb-2">{primarySpecialty}</p>
+            <p className="text-primary font-medium text-xs mb-2">
+              {primarySpecialty}
+            </p>
 
             <div className="flex items-center gap-3 text-gray-300 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
               <span className="flex items-center gap-1">
                 <MapPin size={11} className="text-primary/70" />
-                {artist.country}{artist.city ? `، ${artist.city}` : ""}
+                {artist.country}
+                {artist.city ? `، ${artist.city}` : ""}
               </span>
               <span className="flex items-center gap-1">
                 <span className="w-1 h-1 rounded-full bg-primary/70" />

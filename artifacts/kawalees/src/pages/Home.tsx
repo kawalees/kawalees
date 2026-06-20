@@ -2,10 +2,22 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Search, Filter, ChevronDown, UserX, MapPin,
-  UserPlus, CheckCircle2, Handshake,
-  Palette, Building2, Users,
-  ArrowLeft, Star, TrendingUp, ShieldCheck, Film
+  Search,
+  Filter,
+  ChevronDown,
+  UserX,
+  MapPin,
+  UserPlus,
+  CheckCircle2,
+  Handshake,
+  Palette,
+  Building2,
+  Users,
+  ArrowLeft,
+  Star,
+  TrendingUp,
+  ShieldCheck,
+  Film,
 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -90,22 +102,31 @@ export default function Home() {
 
   const [emblaRef] = useEmblaCarousel(
     { loop: true, direction: "rtl", dragFree: true },
-    [Autoplay({ delay: 4000 })]
+    [Autoplay({ delay: 4000 })],
   );
 
-  const featuredArtists = useMemo(() => allArtists.filter((a) => a.featured), []);
+  const featuredArtists = useMemo(
+    () => allArtists.filter((a) => a.featured),
+    [],
+  );
   const totalArtists = allArtists.length;
   const totalCountries = useMemo(
-    () => new Set(allArtists.map((artist) => artist.country).filter(Boolean)).size,
-    []
+    () =>
+      new Set(allArtists.map((artist) => artist.country).filter(Boolean)).size,
+    [],
   );
   const hasArtists = totalArtists > 0;
 
   const specialties = useMemo(() => {
     const specs = new Set(
       allArtists.flatMap((a) =>
-        a.specialty ? a.specialty.split(/[,،]/).map((s) => s.trim()).filter(Boolean) : []
-      )
+        a.specialty
+          ? a.specialty
+              .split(/[,،]/)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+      ),
     );
     return ["الكل", ...Array.from(specs).sort()];
   }, []);
@@ -130,10 +151,15 @@ export default function Home() {
       ];
       const matchesSearch =
         !normalizedSearch ||
-        searchableFields.some((field) => field?.toLowerCase().includes(normalizedSearch));
+        searchableFields.some((field) =>
+          field?.toLowerCase().includes(normalizedSearch),
+        );
       const matchesSpecialty =
         activeSpecialty === "الكل" ||
-        artist.specialty.split(/[,،]/).map((s) => s.trim()).includes(activeSpecialty);
+        artist.specialty
+          .split(/[,،]/)
+          .map((s) => s.trim())
+          .includes(activeSpecialty);
       const matchesCountry =
         activeCountry === "الكل" || artist.country === activeCountry;
       return matchesSearch && matchesSpecialty && matchesCountry;
@@ -142,7 +168,8 @@ export default function Home() {
 
   const visibleArtists = filteredArtists.slice(0, visibleCount);
   const hasMore = visibleCount < filteredArtists.length;
-  const hasActiveFilters = searchTerm || activeSpecialty !== "الكل" || activeCountry !== "الكل";
+  const hasActiveFilters =
+    searchTerm || activeSpecialty !== "الكل" || activeCountry !== "الكل";
   const isEmptyDirectory = !hasActiveFilters && !hasArtists;
 
   function clearFilters() {
@@ -161,7 +188,9 @@ export default function Home() {
             src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
             alt="خلفية مسرحية لكواليس"
             className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/60 to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,106,0.1)_0%,transparent_60%)]" />
@@ -175,7 +204,9 @@ export default function Home() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/30 rounded-full mb-6">
               <Star size={12} className="text-primary fill-primary" />
-              <span className="text-primary text-xs font-medium">المنصة الاحترافية للفنانين العرب</span>
+              <span className="text-primary text-xs font-medium">
+                المنصة الاحترافية للفنانين العرب
+              </span>
             </div>
 
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight text-white drop-shadow-2xl">
@@ -183,7 +214,8 @@ export default function Home() {
               <br /> خلف الكواليس
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-sans leading-relaxed">
-              المنصة الأولى المخصصة لربط صناع المسرح، السينما، والفنون بأفضل الكفاءات والمحترفين في العالم العربي.
+              المنصة الأولى المخصصة لربط صناع المسرح، السينما، والفنون بأفضل
+              الكفاءات والمحترفين في العالم العربي.
             </p>
 
             <div className="relative max-w-2xl mx-auto mb-8">
@@ -194,8 +226,12 @@ export default function Home() {
                 type="text"
                 className="w-full block pl-4 pr-12 py-5 bg-black/50 border border-white/10 rounded-2xl text-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary backdrop-blur-md shadow-2xl transition-all"
                 placeholder="ابحث عن مخرج، مصمم إضاءة، كاتب..."
+                aria-label="البحث في دليل الفنانين"
                 value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setVisibleCount(12); }}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setVisibleCount(12);
+                }}
                 data-testid="input-artist-search"
               />
             </div>
@@ -220,7 +256,6 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-
       </section>
 
       {/* ── Stats Band ───────────────────────────────────── */}
@@ -229,15 +264,21 @@ export default function Home() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="grid grid-cols-3 gap-6 text-center">
               <div>
-                <p className="font-display text-4xl font-bold text-primary">{totalArtists}</p>
+                <p className="font-display text-4xl font-bold text-primary">
+                  {totalArtists}
+                </p>
                 <p className="text-gray-400 text-sm mt-1">فنان محترف</p>
               </div>
               <div>
-                <p className="font-display text-4xl font-bold text-primary">{totalCountries}</p>
+                <p className="font-display text-4xl font-bold text-primary">
+                  {totalCountries}
+                </p>
                 <p className="text-gray-400 text-sm mt-1">دول مشاركة</p>
               </div>
               <div>
-                <p className="font-display text-4xl font-bold text-primary">∞</p>
+                <p className="font-display text-4xl font-bold text-primary">
+                  ∞
+                </p>
                 <p className="text-gray-400 text-sm mt-1">فرصة للتواصل</p>
               </div>
             </div>
@@ -250,8 +291,12 @@ export default function Home() {
         <section className="py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-14">
-              <h2 className="font-display text-3xl sm:text-4xl text-white mb-3">كيف تعمل المنصة؟</h2>
-              <p className="text-gray-400 max-w-lg mx-auto">ثلاث خطوات بسيطة تفصلك عن عالم الاحترافية</p>
+              <h2 className="font-display text-3xl sm:text-4xl text-white mb-3">
+                كيف تعمل المنصة؟
+              </h2>
+              <p className="text-gray-400 max-w-lg mx-auto">
+                ثلاث خطوات بسيطة تفصلك عن عالم الاحترافية
+              </p>
             </div>
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
               {HOW_IT_WORKS.map(({ step, icon: Icon, title, desc }) => (
@@ -269,8 +314,12 @@ export default function Home() {
                       {step.replace("0", "")}
                     </span>
                   </div>
-                  <h3 className="font-display text-xl text-white mb-2">{title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
+                  <h3 className="font-display text-xl text-white mb-2">
+                    {title}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {desc}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -287,7 +336,10 @@ export default function Home() {
                 <span className="w-2 h-8 bg-primary rounded-full" />
                 مواهب استثنائية
               </h2>
-              <Link href="/" className="text-sm text-gray-400 hover:text-primary transition-colors flex items-center gap-1">
+              <Link
+                href="/"
+                className="text-sm text-gray-400 hover:text-primary transition-colors flex items-center gap-1"
+              >
                 عرض الكل
                 <ArrowLeft size={14} />
               </Link>
@@ -295,7 +347,10 @@ export default function Home() {
             <div className="embla" ref={emblaRef}>
               <div className="embla__container gap-6 py-4">
                 {featuredArtists.map((artist) => (
-                  <div key={artist.id} className="embla__slide w-[85%] sm:w-[45%] md:w-[30%] lg:w-[25%] flex-shrink-0">
+                  <div
+                    key={artist.id}
+                    className="embla__slide w-[85%] sm:w-[45%] md:w-[30%] lg:w-[25%] flex-shrink-0"
+                  >
                     <div className="h-[400px]">
                       <ArtistCard artist={artist} isFeatured={true} />
                     </div>
@@ -312,38 +367,65 @@ export default function Home() {
         <section className="py-20 bg-zinc-950/30">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-14">
-              <h2 className="font-display text-3xl sm:text-4xl text-white mb-3">لمن كواليس؟</h2>
-              <p className="text-gray-400 max-w-lg mx-auto">منصة مصممة لكل صانع فن، مهما كان دوره</p>
+              <h2 className="font-display text-3xl sm:text-4xl text-white mb-3">
+                لمن كواليس؟
+              </h2>
+              <p className="text-gray-400 max-w-lg mx-auto">
+                منصة مصممة لكل صانع فن، مهما كان دوره
+              </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {USER_TYPES.map(({ icon: Icon, title, color, bg, border, items, cta, href }) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className={`rounded-2xl border p-6 flex flex-col ${bg} ${border}`}
-                >
-                  <div className={`w-12 h-12 rounded-xl ${bg} border ${border} flex items-center justify-center mb-4`}>
-                    <Icon className={color} size={22} />
-                  </div>
-                  <h3 className={`font-display text-xl font-bold mb-4 ${color}`}>{title}</h3>
-                  <ul className="space-y-2.5 mb-6 flex-1">
-                    {items.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
-                        <CheckCircle2 size={14} className={`${color} flex-shrink-0 mt-0.5 opacity-70`} />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={href}
-                    className={`w-full text-center py-2.5 rounded-xl text-sm font-medium border transition-all hover:opacity-90 ${border} ${color}`}
+              {USER_TYPES.map(
+                ({
+                  icon: Icon,
+                  title,
+                  color,
+                  bg,
+                  border,
+                  items,
+                  cta,
+                  href,
+                }) => (
+                  <motion.div
+                    key={title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className={`rounded-2xl border p-6 flex flex-col ${bg} ${border}`}
                   >
-                    {cta}
-                  </Link>
-                </motion.div>
-              ))}
+                    <div
+                      className={`w-12 h-12 rounded-xl ${bg} border ${border} flex items-center justify-center mb-4`}
+                    >
+                      <Icon className={color} size={22} />
+                    </div>
+                    <h3
+                      className={`font-display text-xl font-bold mb-4 ${color}`}
+                    >
+                      {title}
+                    </h3>
+                    <ul className="space-y-2.5 mb-6 flex-1">
+                      {items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-start gap-2 text-sm text-gray-300"
+                        >
+                          <CheckCircle2
+                            size={14}
+                            className={`${color} flex-shrink-0 mt-0.5 opacity-70`}
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href={href}
+                      className={`w-full text-center py-2.5 rounded-xl text-sm font-medium border transition-all hover:opacity-90 ${border} ${color}`}
+                    >
+                      {cta}
+                    </Link>
+                  </motion.div>
+                ),
+              )}
             </div>
           </div>
         </section>
@@ -367,12 +449,17 @@ export default function Home() {
                   <MapPin size={16} className="text-primary flex-shrink-0" />
                   <select
                     value={activeCountry}
-                    onChange={(e) => { setActiveCountry(e.target.value); setVisibleCount(12); }}
+                    onChange={(e) => {
+                      setActiveCountry(e.target.value);
+                      setVisibleCount(12);
+                    }}
                     data-testid="select-country-filter"
                     className="bg-white/5 border border-white/10 text-gray-300 text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-primary/50 transition-all"
                   >
                     {countries.map((c) => (
-                      <option key={c} value={c} className="bg-zinc-900">{c}</option>
+                      <option key={c} value={c} className="bg-zinc-900">
+                        {c}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -389,7 +476,10 @@ export default function Home() {
                   <button
                     key={spec}
                     data-testid={`filter-specialty-${spec}`}
-                    onClick={() => { setActiveSpecialty(spec); setVisibleCount(12); }}
+                    onClick={() => {
+                      setActiveSpecialty(spec);
+                      setVisibleCount(12);
+                    }}
                     className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
                       activeSpecialty === spec
                         ? "bg-primary text-background shadow-[0_0_15px_rgba(200,169,106,0.3)]"
@@ -421,7 +511,9 @@ export default function Home() {
                 <UserX size={32} className="text-gray-500" />
               </div>
               <h3 className="text-2xl font-display font-bold text-white mb-2">
-                {isEmptyDirectory ? "الدليل جاهز لاستقبال الملفات الرسمية" : "لم نجد نتائج مطابقة"}
+                {isEmptyDirectory
+                  ? "الدليل جاهز لاستقبال الملفات الرسمية"
+                  : "لم نجد نتائج مطابقة"}
               </h3>
               <p className="text-gray-400 max-w-md">
                 {isEmptyDirectory
@@ -458,7 +550,8 @@ export default function Home() {
 
               <div className="mt-8 text-center">
                 <p className="text-gray-500 text-sm mb-6">
-                  عرض {Math.min(visibleCount, filteredArtists.length)} من {filteredArtists.length} فنان
+                  عرض {Math.min(visibleCount, filteredArtists.length)} من{" "}
+                  {filteredArtists.length} فنان
                 </p>
                 {hasMore && (
                   <button
@@ -467,7 +560,10 @@ export default function Home() {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-transparent border-2 border-primary/50 text-primary hover:bg-primary hover:text-background font-bold rounded-xl transition-all duration-300 group"
                   >
                     تحميل المزيد
-                    <ChevronDown className="group-hover:translate-y-1 transition-transform" size={20} />
+                    <ChevronDown
+                      className="group-hover:translate-y-1 transition-transform"
+                      size={20}
+                    />
                   </button>
                 )}
               </div>
@@ -483,18 +579,30 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="flex flex-col items-center gap-3 p-6">
                 <ShieldCheck className="text-primary" size={32} />
-                <h3 className="font-display text-lg text-white">فنانون موثّقون</h3>
-                <p className="text-gray-400 text-sm">كل فنان في الدليل يمر بمراجعة إدارية قبل النشر</p>
+                <h3 className="font-display text-lg text-white">
+                  فنانون موثّقون
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  كل فنان في الدليل يمر بمراجعة إدارية قبل النشر
+                </p>
               </div>
               <div className="flex flex-col items-center gap-3 p-6">
                 <TrendingUp className="text-primary" size={32} />
-                <h3 className="font-display text-lg text-white">فرص كاستنج حقيقية</h3>
-                <p className="text-gray-400 text-sm">مشاريع منشورة من شركات إنتاج معتمدة</p>
+                <h3 className="font-display text-lg text-white">
+                  فرص كاستنج حقيقية
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  مشاريع منشورة من شركات إنتاج معتمدة
+                </p>
               </div>
               <div className="flex flex-col items-center gap-3 p-6">
                 <Users className="text-primary" size={32} />
-                <h3 className="font-display text-lg text-white">مجتمع متنامٍ</h3>
-                <p className="text-gray-400 text-sm">منصة تجمع الفنانين وصناع الفن من أنحاء العالم العربي</p>
+                <h3 className="font-display text-lg text-white">
+                  مجتمع متنامٍ
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  منصة تجمع الفنانين وصناع الفن من أنحاء العالم العربي
+                </p>
               </div>
             </div>
           </div>
@@ -509,11 +617,16 @@ export default function Home() {
           <div className="max-w-3xl mx-auto px-4 text-center relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full mb-6">
               <Star className="text-primary fill-primary" size={14} />
-              <span className="text-primary text-xs font-medium">منصة مجانية للفنانين</span>
+              <span className="text-primary text-xs font-medium">
+                منصة مجانية للفنانين
+              </span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl text-white mb-4">ابدأ رحلتك في كواليس</h2>
+            <h2 className="font-display text-3xl sm:text-4xl text-white mb-4">
+              ابدأ رحلتك في كواليس
+            </h2>
             <p className="text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
-              سجّل ملفك المهني الآن وظهر في الدليل الاحترافي لصناع الفن في العالم العربي.
+              سجّل ملفك المهني الآن وظهر في الدليل الاحترافي لصناع الفن في
+              العالم العربي.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link

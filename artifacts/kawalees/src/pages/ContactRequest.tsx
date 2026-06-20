@@ -1,23 +1,42 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, User, Building, Briefcase, MessageSquare, Mail, Phone } from "lucide-react";
+import {
+  Send,
+  CheckCircle2,
+  User,
+  Building,
+  Briefcase,
+  MessageSquare,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { artists } from "@/data/artists";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
-const REQUEST_TYPES = ["استفسار عام", "طلب فنان", "نشر فرصة كاستنج", "تعاون / شراكة"];
+const REQUEST_TYPES = [
+  "استفسار عام",
+  "طلب فنان",
+  "نشر فرصة كاستنج",
+  "تعاون / شراكة",
+];
 
 const inputClasses =
   "w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 font-sans";
-const labelClasses = "block text-sm font-medium text-gray-400 mb-2 font-display";
+const labelClasses =
+  "block text-sm font-medium text-gray-400 mb-2 font-display";
 
 export default function ContactRequest() {
-  const queryParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+  const queryParams = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : "",
+  );
   const preSelectedArtist = queryParams.get("artist") || "";
   const hasArtists = artists.length > 0;
 
-  const [requestType, setRequestType] = useState(preSelectedArtist ? "طلب فنان" : REQUEST_TYPES[0]);
+  const [requestType, setRequestType] = useState(
+    preSelectedArtist ? "طلب فنان" : REQUEST_TYPES[0],
+  );
   const [artistName, setArtistName] = useState(preSelectedArtist);
   const [requesterName, setRequesterName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,7 +67,10 @@ export default function ContactRequest() {
     try {
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
           requestType,
           artistName: artistName || "لا يوجد فنان محدد / طلب ترشيح مناسب",
@@ -78,13 +100,13 @@ export default function ContactRequest() {
   return (
     <AppLayout>
       <div className="pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6">
-
         <div className="text-center mb-16">
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
             طلب <span className="text-gradient-gold">تواصل</span>
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            نحن هنا لتسهيل تواصلك مع أفضل المواهب. قم بتعبئة النموذج وسنقوم بإيصال طلبك للفنان المعني.
+            نحن هنا لتسهيل تواصلك مع أفضل المواهب. قم بتعبئة النموذج وسنقوم
+            بإيصال طلبك للفنان المعني.
           </p>
         </div>
 
@@ -97,9 +119,12 @@ export default function ContactRequest() {
             <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 size={48} className="text-primary" />
             </div>
-            <h2 className="text-3xl font-display font-bold text-white mb-4">تم إرسال طلبك بنجاح!</h2>
+            <h2 className="text-3xl font-display font-bold text-white mb-4">
+              تم إرسال طلبك بنجاح!
+            </h2>
             <p className="text-gray-400 text-lg mb-8 max-w-lg mx-auto">
-              سيقوم فريق كواليس بمراجعة طلبك والتواصل معك عبر البريد أو الهاتف المذكورين.
+              سيقوم فريق كواليس بمراجعة طلبك والتواصل معك عبر البريد أو الهاتف
+              المذكورين.
             </p>
             <Link
               href="/"
@@ -117,21 +142,32 @@ export default function ContactRequest() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
             <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-
               <div className="space-y-6">
-                <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">المعلومات الأساسية</h3>
+                <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">
+                  المعلومات الأساسية
+                </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className={labelClasses}>نوع الطلب *</label>
+                    <label
+                      htmlFor="contact-request-type"
+                      className={labelClasses}
+                    >
+                      نوع الطلب *
+                    </label>
                     <div className="relative">
                       <select
+                        id="contact-request-type"
                         value={requestType}
                         onChange={(e) => setRequestType(e.target.value)}
                         className={`${inputClasses} appearance-none pr-10`}
                       >
                         {REQUEST_TYPES.map((type) => (
-                          <option key={type} value={type} className="bg-zinc-900">
+                          <option
+                            key={type}
+                            value={type}
+                            className="bg-zinc-900"
+                          >
                             {type}
                           </option>
                         ))}
@@ -143,9 +179,15 @@ export default function ContactRequest() {
                   </div>
 
                   <div>
-                    <label className={labelClasses}>اسمك الكامل *</label>
+                    <label
+                      htmlFor="contact-requester-name"
+                      className={labelClasses}
+                    >
+                      اسمك الكامل *
+                    </label>
                     <div className="relative">
                       <input
+                        id="contact-requester-name"
                         type="text"
                         value={requesterName}
                         onChange={(e) => setRequesterName(e.target.value)}
@@ -159,9 +201,12 @@ export default function ContactRequest() {
                   </div>
 
                   <div>
-                    <label className={labelClasses}>البريد الإلكتروني *</label>
+                    <label htmlFor="contact-email" className={labelClasses}>
+                      البريد الإلكتروني *
+                    </label>
                     <div className="relative">
                       <input
+                        id="contact-email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -175,9 +220,12 @@ export default function ContactRequest() {
                   </div>
 
                   <div>
-                    <label className={labelClasses}>رقم الهاتف / واتساب *</label>
+                    <label htmlFor="contact-phone" className={labelClasses}>
+                      رقم الهاتف / واتساب *
+                    </label>
                     <div className="relative">
                       <input
+                        id="contact-phone"
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
@@ -191,9 +239,12 @@ export default function ContactRequest() {
                   </div>
 
                   <div>
-                    <label className={labelClasses}>الجهة / الشركة</label>
+                    <label htmlFor="contact-company" className={labelClasses}>
+                      الجهة / الشركة
+                    </label>
                     <div className="relative">
                       <input
+                        id="contact-company"
                         type="text"
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
@@ -207,18 +258,31 @@ export default function ContactRequest() {
                   </div>
 
                   <div>
-                    <label className={labelClasses}>الفنان المطلوب <span className="text-gray-600 text-xs">(اختياري)</span></label>
+                    <label
+                      htmlFor="contact-artist-name"
+                      className={labelClasses}
+                    >
+                      الفنان المطلوب{" "}
+                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                    </label>
                     <div className="relative">
                       <select
+                        id="contact-artist-name"
                         value={artistName}
                         onChange={(e) => setArtistName(e.target.value)}
                         className={`${inputClasses} appearance-none pr-10`}
                       >
                         <option value="" className="bg-zinc-900">
-                          {hasArtists ? "لا يوجد فنان محدد / أريد ترشيح مناسب" : "لا يوجد فنان منشور بعد / أريد تواصلاً عاماً"}
+                          {hasArtists
+                            ? "لا يوجد فنان محدد / أريد ترشيح مناسب"
+                            : "لا يوجد فنان منشور بعد / أريد تواصلاً عاماً"}
                         </option>
                         {artists.map((a) => (
-                          <option key={a.id} value={a.name} className="bg-zinc-900">
+                          <option
+                            key={a.id}
+                            value={a.name}
+                            className="bg-zinc-900"
+                          >
                             {a.name} ({a.specialty.split(/[,،]/)[0]?.trim()})
                           </option>
                         ))}
@@ -232,12 +296,21 @@ export default function ContactRequest() {
               </div>
 
               <div className="space-y-6 pt-4">
-                <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">تفاصيل المشروع</h3>
+                <h3 className="text-xl font-display font-bold text-white border-b border-white/10 pb-4">
+                  تفاصيل المشروع
+                </h3>
 
                 <div>
-                  <label className={labelClasses}>نوع المشروع / الاحتياج <span className="text-gray-600 text-xs">(اختياري)</span></label>
+                  <label
+                    htmlFor="contact-project-type"
+                    className={labelClasses}
+                  >
+                    نوع المشروع / الاحتياج{" "}
+                    <span className="text-gray-600 text-xs">(اختياري)</span>
+                  </label>
                   <div className="relative">
                     <input
+                      id="contact-project-type"
                       type="text"
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
@@ -251,9 +324,12 @@ export default function ContactRequest() {
                 </div>
 
                 <div>
-                  <label className={labelClasses}>تفاصيل الطلب / الرسالة *</label>
+                  <label htmlFor="contact-message" className={labelClasses}>
+                    تفاصيل الطلب / الرسالة *
+                  </label>
                   <div className="relative">
                     <textarea
+                      id="contact-message"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={5}
@@ -285,7 +361,8 @@ export default function ContactRequest() {
                   )}
                 </button>
                 <p className="text-center text-gray-500 text-xs mt-4">
-                  بياناتك تستخدم فقط للرد على طلبك وترتيب التواصل المناسب عبر كواليس.
+                  بياناتك تستخدم فقط للرد على طلبك وترتيب التواصل المناسب عبر
+                  كواليس.
                 </p>
               </div>
             </form>

@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { copyFile, cp, mkdir, rm } from "node:fs/promises";
+import { copyFile, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -10,23 +10,45 @@ const docsDir = path.join(root, "docs");
 
 function run(command: string, args: string[]) {
   const executable = process.platform === "win32" ? "cmd.exe" : command;
-  const executableArgs = process.platform === "win32" ? ["/d", "/c", command, ...args] : args;
+  const executableArgs =
+    process.platform === "win32" ? ["/d", "/c", command, ...args] : args;
   execFileSync(executable, executableArgs, {
     cwd: root,
     stdio: "inherit",
   });
 }
 
-async function importData<T>(relativePath: string, exportName: string): Promise<T[]> {
-  const moduleUrl = pathToFileURL(path.join(frontendDir, "src", relativePath)).href;
+async function importData<T>(
+  relativePath: string,
+  exportName: string,
+): Promise<T[]> {
+  const moduleUrl = pathToFileURL(
+    path.join(frontendDir, "src", relativePath),
+  ).href;
   const dataModule = await import(moduleUrl);
   return dataModule[exportName] as T[];
 }
 
 async function copyIndexToRoute(route: string) {
   const targetDir = path.join(docsDir, route);
+  const routeUrl = `https://kawalees.github.io/kawalees/${route}/`;
+  const targetFile = path.join(targetDir, "index.html");
   await mkdir(targetDir, { recursive: true });
-  await copyFile(path.join(docsDir, "index.html"), path.join(targetDir, "index.html"));
+  await copyFile(path.join(docsDir, "index.html"), targetFile);
+
+  const html = await readFile(targetFile, "utf8");
+  await writeFile(
+    targetFile,
+    html
+      .replace(
+        'href="https://kawalees.github.io/kawalees/"',
+        `href="${routeUrl}"`,
+      )
+      .replace(
+        'property="og:url" content="https://kawalees.github.io/kawalees/"',
+        `property="og:url" content="${routeUrl}"`,
+      ),
+  );
 }
 
 run("pnpm", ["--filter", "kawalees-frontend", "build"]);
@@ -35,10 +57,16 @@ await rm(docsDir, { recursive: true, force: true });
 await mkdir(docsDir, { recursive: true });
 await cp(distDir, docsDir, { recursive: true });
 
-await copyFile(path.join(docsDir, "index.html"), path.join(docsDir, "404.html"));
+await copyFile(
+  path.join(docsDir, "index.html"),
+  path.join(docsDir, "404.html"),
+);
 
 const artists = await importData<{ id: string }>("data/artists.ts", "artists");
-const projects = await importData<{ id: string }>("data/projects.ts", "projects");
+const projects = await importData<{ id: string }>(
+  "data/projects.ts",
+  "projects",
+);
 
 const routes = new Set([
   "join",
