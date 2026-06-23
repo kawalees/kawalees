@@ -1,6 +1,16 @@
 import { Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { Building2, Check, Crown, Handshake, Palette, Sparkles, Star, Users, Zap } from "lucide-react";
+import {
+  Building2,
+  Check,
+  Crown,
+  Handshake,
+  Palette,
+  Sparkles,
+  Star,
+  Users,
+  Zap,
+} from "lucide-react";
 
 const artistPlans = [
   {
@@ -125,8 +135,8 @@ export default function Pricing() {
             منصة ثابتة، تحرير يدوي، وظهور منسّق
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            كواليس تعمل كدليل عربي منسق يدوياً. أرسل بياناتك عبر النماذج، ثم تتم مراجعتها
-            وإضافتها إلى الموقع في تحديث النشر التالي.
+            كواليس تعمل كدليل عربي منسق يدوياً. أرسل بياناتك عبر النماذج، ثم تتم مراجعتها وإضافتها
+            إلى الموقع في تحديث النشر التالي.
           </p>
         </div>
 
@@ -155,7 +165,10 @@ export default function Pricing() {
                 </div>
                 <h3 className="font-display text-lg text-white mb-2">{title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-5">{description}</p>
-                <Link href={href} className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:text-primary/80">
+                <Link
+                  href={href}
+                  className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:text-primary/80"
+                >
                   {cta}
                   <Zap size={14} />
                 </Link>
@@ -167,14 +180,20 @@ export default function Pricing() {
         <section className="rounded-3xl border border-primary/20 bg-gradient-to-l from-primary/10 to-white/5 p-7 md:p-9 text-center">
           <h2 className="font-display text-2xl text-white mb-3">كيف تتم الإضافة؟</h2>
           <p className="text-gray-300 leading-relaxed max-w-3xl mx-auto mb-6">
-            لا توجد حسابات أو لوحات تحكم داخل الموقع. كل طلب يصل عبر Formspree، ثم يتم
-            تحديث ملفات البيانات يدوياً وإعادة نشر GitHub Pages لضمان جودة الدليل ودقة المحتوى.
+            لا توجد حسابات أو لوحات تحكم داخل الموقع. كل طلب يصل عبر Formspree، ثم يتم تحديث ملفات
+            البيانات يدوياً وإعادة نشر GitHub Pages لضمان جودة الدليل ودقة المحتوى.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/join" className="px-5 py-3 bg-primary text-background font-bold rounded-xl hover:bg-primary/90 transition-colors">
+            <Link
+              href="/join"
+              className="px-5 py-3 bg-primary text-background font-bold rounded-xl hover:bg-primary/90 transition-colors"
+            >
               انضم إلى الدليل
             </Link>
-            <Link href="/contact" className="px-5 py-3 border border-white/20 text-gray-200 rounded-xl hover:border-white/40 hover:bg-white/5 transition-colors">
+            <Link
+              href="/contact"
+              className="px-5 py-3 border border-white/20 text-gray-200 rounded-xl hover:border-white/40 hover:bg-white/5 transition-colors"
+            >
               تواصل معنا
             </Link>
           </div>

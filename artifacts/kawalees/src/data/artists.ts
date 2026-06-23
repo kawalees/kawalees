@@ -3,8 +3,10 @@ import type { Artist } from "@/types";
 const artistProfiles: Omit<Artist, "id">[] = [
   {
     name: "أحمد محمد علي رواني",
-    imageUrl: "https://res.cloudinary.com/dagwiscyq/image/upload/v1781902476/n4jjaofvugsgfbzdr3x6.jpg",
-    specialty: "ممثل مسرحي، ممثل سينمائي، ممثل تلفزيوني، ممثل صوت ودبلجة، ممثل كوميدي، مساعد مخرج، مخرج ثانٍ",
+    imageUrl:
+      "https://res.cloudinary.com/dagwiscyq/image/upload/v1781902476/n4jjaofvugsgfbzdr3x6.jpg",
+    specialty:
+      "ممثل مسرحي، ممثل سينمائي، ممثل تلفزيوني، ممثل صوت ودبلجة، ممثل كوميدي، مساعد مخرج، مخرج ثانٍ",
     featured: true,
     country: "قطر",
     city: "الدوحة",

@@ -3,8 +3,14 @@ import { Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { projects as allProjects } from "@/data/projects";
 import {
-  Clapperboard, Star, MapPin, Search, Filter,
-  CheckCircle, XCircle, ChevronLeft
+  Clapperboard,
+  Star,
+  MapPin,
+  Search,
+  Filter,
+  CheckCircle,
+  XCircle,
+  ChevronLeft,
 } from "lucide-react";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -27,14 +33,7 @@ export default function Projects() {
   const filtered = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
     return allProjects.filter((p) => {
-      const searchableFields = [
-        p.title,
-        p.description,
-        p.producer,
-        p.location,
-        p.type,
-        ...p.roles,
-      ];
+      const searchableFields = [p.title, p.description, p.producer, p.location, p.type, ...p.roles];
       const matchesSearch =
         !normalizedSearch ||
         searchableFields.some((field) => field?.toLowerCase().includes(normalizedSearch));
@@ -44,13 +43,13 @@ export default function Projects() {
     });
   }, [search, statusFilter, typeFilter]);
 
-  const hasActiveFilters = Boolean(search.trim()) || statusFilter !== "all" || typeFilter !== "الكل";
+  const hasActiveFilters =
+    Boolean(search.trim()) || statusFilter !== "all" || typeFilter !== "الكل";
   const isEmptyProjectBoard = !hasActiveFilters && !hasProjects;
 
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
-
         {/* Header */}
         <div className="mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-4">
@@ -89,9 +88,11 @@ export default function Projects() {
                 onClick={() => setStatusFilter(s)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
                   statusFilter === s
-                    ? s === "open" ? "bg-green-500/20 text-green-400 border border-green-500/40"
-                      : s === "closed" ? "bg-red-500/20 text-red-400 border border-red-500/40"
-                      : "bg-white/15 text-white border border-white/20"
+                    ? s === "open"
+                      ? "bg-green-500/20 text-green-400 border border-green-500/40"
+                      : s === "closed"
+                        ? "bg-red-500/20 text-red-400 border border-red-500/40"
+                        : "bg-white/15 text-white border border-white/20"
                     : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"
                 }`}
               >
@@ -143,7 +144,11 @@ export default function Projects() {
             </p>
             {hasActiveFilters && (
               <button
-                onClick={() => { setSearch(""); setStatusFilter("all"); setTypeFilter("الكل"); }}
+                onClick={() => {
+                  setSearch("");
+                  setStatusFilter("all");
+                  setTypeFilter("الكل");
+                }}
                 className="mt-2 text-sm text-primary hover:text-primary/80 transition-colors"
               >
                 مسح الفلاتر
@@ -173,12 +178,18 @@ export default function Projects() {
                         مميز
                       </span>
                     )}
-                    <span className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
-                      project.status === "open"
-                        ? "bg-green-500/10 text-green-400 border-green-500/30"
-                        : "bg-gray-500/10 text-gray-400 border-gray-500/30"
-                    }`}>
-                      {project.status === "open" ? <CheckCircle size={10} /> : <XCircle size={10} />}
+                    <span
+                      className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
+                        project.status === "open"
+                          ? "bg-green-500/10 text-green-400 border-green-500/30"
+                          : "bg-gray-500/10 text-gray-400 border-gray-500/30"
+                      }`}
+                    >
+                      {project.status === "open" ? (
+                        <CheckCircle size={10} />
+                      ) : (
+                        <XCircle size={10} />
+                      )}
                       {project.status === "open" ? "مفتوح للتقديم" : "انتهى التقديم"}
                     </span>
                     <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
@@ -195,7 +206,9 @@ export default function Projects() {
                       <h2 className="font-display text-lg text-white group-hover:text-primary transition-colors mb-1">
                         {project.title}
                       </h2>
-                      <p className="text-sm text-gray-400 line-clamp-2 mb-3">{project.description}</p>
+                      <p className="text-sm text-gray-400 line-clamp-2 mb-3">
+                        {project.description}
+                      </p>
 
                       <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                         <span className="flex items-center gap-1">
@@ -203,19 +216,25 @@ export default function Projects() {
                           {project.location}
                         </span>
                         {project.producer && (
-                          <span className="flex items-center gap-1">
-                            {project.producer}
-                          </span>
+                          <span className="flex items-center gap-1">{project.producer}</span>
                         )}
                         {project.deadline && (
                           <span>
-                            آخر موعد: {new Date(project.deadline).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
+                            آخر موعد:{" "}
+                            {new Date(project.deadline).toLocaleDateString("ar-SA", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <ChevronLeft size={18} className="text-gray-600 group-hover:text-primary transition-colors flex-shrink-0 self-center" />
+                    <ChevronLeft
+                      size={18}
+                      className="text-gray-600 group-hover:text-primary transition-colors flex-shrink-0 self-center"
+                    />
                   </div>
                 </div>
               </Link>

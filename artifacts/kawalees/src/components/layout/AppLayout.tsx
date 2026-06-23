@@ -10,6 +10,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -29,24 +30,30 @@ export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground dark selection:bg-primary/30 selection:text-primary">
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${
-          isScrolled
-            ? "bg-background/80 backdrop-blur-md border-primary/20 py-4 shadow-lg shadow-black/50"
-            : "bg-transparent border-transparent py-6"
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isScrolled ? "py-3" : "py-5"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center gap-6">
-            <Link href="/" className="group flex items-center gap-2 z-50 flex-shrink-0">
-              <span className="font-display font-bold text-3xl tracking-wider text-gradient-gold">كواليس</span>
+          <div className="nav-capsule flex justify-between items-center gap-6 px-4 py-3 md:px-7">
+            <Link
+              href="/"
+              className="group flex items-center gap-2 z-50 flex-shrink-0 focus-gold rounded-xl"
+            >
+              <span className="logo-wordmark font-display font-bold text-3xl tracking-wider text-gradient-gold">
+                كواليس
+              </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
+            <nav
+              className="hidden md:flex items-center gap-6 flex-1 justify-center"
+              aria-label="التنقل الرئيسي"
+            >
               {navLinks.map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`font-display text-base transition-colors hover:text-primary flex items-center gap-1.5 ${
+                  className={`focus-gold rounded-lg font-display text-base transition-colors hover:text-primary flex items-center gap-1.5 ${
                     isActive(href) ? "text-primary" : "text-gray-300"
                   }`}
                 >
@@ -60,7 +67,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 href="/join"
                 data-testid="link-join"
-                className={`font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
+                className={`focus-gold font-display text-base px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-1.5 ${
                   isActive("/join")
                     ? "border-primary bg-primary text-background"
                     : "border-primary/40 text-primary hover:bg-primary/10"
@@ -72,10 +79,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </div>
 
             <button
-              className="md:hidden z-50 p-2 text-gray-300 hover:text-primary"
+              className="focus-gold md:hidden z-50 p-2 rounded-lg text-gray-300 hover:text-primary"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -83,20 +91,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
 
         <motion.div
+          id="mobile-navigation"
           initial={false}
           animate={mobileMenuOpen ? "open" : "closed"}
           variants={{
             open: { opacity: 1, height: "auto", display: "block" },
             closed: { opacity: 0, height: 0, transitionEnd: { display: "none" } },
           }}
-          className="md:hidden absolute top-full left-0 w-full bg-background border-b border-white/10 overflow-hidden"
+          className="md:hidden absolute left-4 right-4 top-[calc(100%-0.5rem)] overflow-hidden rounded-3xl border border-primary/20 bg-black/90 shadow-2xl shadow-black/50 backdrop-blur-2xl"
         >
           <div className="px-4 py-6 flex flex-col gap-4">
             {navLinks.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
-                className={`font-display text-xl hover:text-primary flex items-center gap-2 ${
+                className={`focus-gold rounded-lg font-display text-xl hover:text-primary flex items-center gap-2 ${
                   isActive(href) ? "text-primary" : "text-gray-300"
                 }`}
               >
@@ -104,7 +113,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 {label}
               </Link>
             ))}
-            <Link href="/join" className="font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2">
+            <Link
+              href="/join"
+              className="focus-gold rounded-lg font-display text-xl text-primary hover:text-primary/80 flex items-center gap-2"
+            >
               <UserPlus size={18} />
               انضم كفنان
             </Link>
@@ -132,32 +144,75 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <div>
               <h4 className="text-white text-sm font-bold mb-4">المنصة</h4>
               <ul className="space-y-2.5">
-                <li><Link href="/" className="text-gray-500 hover:text-primary transition-colors text-sm">دليل الفنانين</Link></li>
-                <li><Link href="/projects" className="text-gray-500 hover:text-primary transition-colors text-sm">فرص الكاستنج</Link></li>
-                <li><Link href="/join" className="text-gray-500 hover:text-primary transition-colors text-sm">انضم كفنان</Link></li>
+                <li>
+                  <Link
+                    href="/"
+                    className="text-gray-500 hover:text-primary transition-colors text-sm"
+                  >
+                    دليل الفنانين
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/projects"
+                    className="text-gray-500 hover:text-primary transition-colors text-sm"
+                  >
+                    فرص الكاستنج
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/join"
+                    className="text-gray-500 hover:text-primary transition-colors text-sm"
+                  >
+                    انضم كفنان
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white text-sm font-bold mb-4">التواصل</h4>
               <ul className="space-y-2.5">
-                <li><Link href="/contact" className="text-gray-500 hover:text-primary transition-colors text-sm">تواصل معنا</Link></li>
-                <li><Link href="/contact" className="text-gray-500 hover:text-primary transition-colors text-sm">طلب فنان</Link></li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="text-gray-500 hover:text-primary transition-colors text-sm"
+                  >
+                    تواصل معنا
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="text-gray-500 hover:text-primary transition-colors text-sm"
+                  >
+                    طلب فنان
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white text-sm font-bold mb-4">عن كواليس</h4>
               <ul className="space-y-2.5">
-                <li><span className="text-gray-600 text-sm">مجاني للفنانين</span></li>
-                <li><span className="text-gray-600 text-sm">بيانات آمنة ومحمية</span></li>
-                <li><span className="text-gray-600 text-sm">دليل موثّق ومعتمد</span></li>
+                <li>
+                  <span className="text-gray-600 text-sm">مجاني للفنانين</span>
+                </li>
+                <li>
+                  <span className="text-gray-600 text-sm">بيانات آمنة ومحمية</span>
+                </li>
+                <li>
+                  <span className="text-gray-600 text-sm">دليل موثّق ومعتمد</span>
+                </li>
               </ul>
             </div>
           </div>
 
           <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-gray-700 text-xs">© {new Date().getFullYear()} كواليس — جميع الحقوق محفوظة</p>
+            <p className="text-gray-700 text-xs">
+              © {new Date().getFullYear()} كواليس — جميع الحقوق محفوظة
+            </p>
             <p className="text-gray-700 text-xs">منصة عربية لصناع الفن والمسرح والسينما</p>
           </div>
         </div>

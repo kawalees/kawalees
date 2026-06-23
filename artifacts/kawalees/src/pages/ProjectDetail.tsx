@@ -3,8 +3,17 @@ import { useParams, Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { projects } from "@/data/projects";
 import {
-  Clapperboard, Star, MapPin, Calendar, Send,
-  ArrowRight, CheckCircle, XCircle, Users, Loader2, CheckCircle2
+  Clapperboard,
+  Star,
+  MapPin,
+  Calendar,
+  Send,
+  ArrowRight,
+  CheckCircle,
+  XCircle,
+  Users,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xpwznoel";
@@ -67,7 +76,6 @@ export default function ProjectDetail() {
   return (
     <AppLayout>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-16">
-
         {/* Back */}
         <Link
           href="/projects"
@@ -85,11 +93,13 @@ export default function ProjectDetail() {
               مميز
             </span>
           )}
-          <span className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
-            project.status === "open"
-              ? "bg-green-500/10 text-green-400 border-green-500/30"
-              : "bg-gray-500/10 text-gray-400 border-gray-500/30"
-          }`}>
+          <span
+            className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${
+              project.status === "open"
+                ? "bg-green-500/10 text-green-400 border-green-500/30"
+                : "bg-gray-500/10 text-gray-400 border-gray-500/30"
+            }`}
+          >
             {project.status === "open" ? <CheckCircle size={10} /> : <XCircle size={10} />}
             {project.status === "open" ? "مفتوح للتقديم" : "انتهى التقديم"}
           </span>
@@ -99,9 +109,11 @@ export default function ProjectDetail() {
         </div>
 
         {/* Project card */}
-        <div className={`bg-white/5 border rounded-2xl p-8 mb-8 ${
-          project.featured ? "border-primary/30 shadow-lg shadow-primary/10" : "border-white/10"
-        }`}>
+        <div
+          className={`bg-white/5 border rounded-2xl p-8 mb-8 ${
+            project.featured ? "border-primary/30 shadow-lg shadow-primary/10" : "border-white/10"
+          }`}
+        >
           <div className="flex items-start gap-4 mb-6">
             <div className="flex-shrink-0 w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
               <Clapperboard className="text-primary" size={26} />
@@ -122,14 +134,20 @@ export default function ProjectDetail() {
                 {project.deadline && (
                   <span className="flex items-center gap-1.5">
                     <Calendar size={14} />
-                    {new Date(project.deadline).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
+                    {new Date(project.deadline).toLocaleDateString("ar-SA", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </span>
                 )}
               </div>
             </div>
           </div>
 
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line mb-6">{project.description}</p>
+          <p className="text-gray-300 leading-relaxed whitespace-pre-line mb-6">
+            {project.description}
+          </p>
 
           {project.roles.length > 0 && (
             <div>
@@ -167,8 +185,13 @@ export default function ProjectDetail() {
             <div className="flex flex-col items-center py-6 text-center">
               <CheckCircle2 className="text-green-400 mb-3" size={48} />
               <p className="text-white font-display text-xl mb-1">تم إرسال طلبك بنجاح!</p>
-              <p className="text-gray-400 text-sm mb-4">ستتواصل معك جهة الإنتاج قريبًا على البريد الإلكتروني المذكور.</p>
-              <Link href="/projects" className="text-primary text-sm hover:text-primary/80 transition-colors">
+              <p className="text-gray-400 text-sm mb-4">
+                ستتواصل معك جهة الإنتاج قريبًا على البريد الإلكتروني المذكور.
+              </p>
+              <Link
+                href="/projects"
+                className="text-primary text-sm hover:text-primary/80 transition-colors"
+              >
                 العودة للمشاريع
               </Link>
             </div>
@@ -211,9 +234,13 @@ export default function ProjectDetail() {
                       onChange={(e) => setRole(e.target.value)}
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-all text-sm appearance-none"
                     >
-                      <option value="" className="bg-zinc-900">-- اختر الدور (اختياري) --</option>
+                      <option value="" className="bg-zinc-900">
+                        -- اختر الدور (اختياري) --
+                      </option>
                       {project.roles.map((r, i) => (
-                        <option key={i} value={r} className="bg-zinc-900">{r}</option>
+                        <option key={i} value={r} className="bg-zinc-900">
+                          {r}
+                        </option>
                       ))}
                     </select>
                   </div>

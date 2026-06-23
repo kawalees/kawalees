@@ -197,11 +197,7 @@ function createImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-async function getCroppedImg(
-  imageSrc: string,
-  pixelCrop: CropArea,
-  rotation = 0,
-): Promise<Blob> {
+async function getCroppedImg(imageSrc: string, pixelCrop: CropArea, rotation = 0): Promise<Blob> {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -219,22 +215,10 @@ async function getCroppedImg(
   ctx.rotate(rad);
   ctx.translate(-image.width / 2, -image.height / 2);
   ctx.drawImage(image, 0, 0);
-  const cropX = Math.max(
-    0,
-    Math.min(Math.round(pixelCrop.x), canvas.width - 1),
-  );
-  const cropY = Math.max(
-    0,
-    Math.min(Math.round(pixelCrop.y), canvas.height - 1),
-  );
-  const cropWidth = Math.max(
-    1,
-    Math.min(Math.round(pixelCrop.width), canvas.width - cropX),
-  );
-  const cropHeight = Math.max(
-    1,
-    Math.min(Math.round(pixelCrop.height), canvas.height - cropY),
-  );
+  const cropX = Math.max(0, Math.min(Math.round(pixelCrop.x), canvas.width - 1));
+  const cropY = Math.max(0, Math.min(Math.round(pixelCrop.y), canvas.height - 1));
+  const cropWidth = Math.max(1, Math.min(Math.round(pixelCrop.width), canvas.width - cropX));
+  const cropHeight = Math.max(1, Math.min(Math.round(pixelCrop.height), canvas.height - cropY));
   const data = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
   const outputSize = Math.min(640, cropWidth, cropHeight);
   canvas.width = outputSize;
@@ -253,11 +237,7 @@ async function getCroppedImg(
     ctx.drawImage(sourceCanvas, 0, 0, outputSize, outputSize);
   }
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("Crop failed"))),
-      "image/jpeg",
-      0.75,
-    );
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Crop failed"))), "image/jpeg", 0.75);
   });
 }
 
@@ -277,19 +257,14 @@ async function uploadProfileImageToCloudinary(
   formData.append("file", selectedFile);
   formData.append("upload_preset", uploadPreset);
 
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    },
-  );
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: "POST",
+    body: formData,
+  });
 
   const data = (await response.json()) as CloudinaryUploadResponse;
   if (!response.ok || !data.secure_url) {
-    throw new Error(
-      data.error?.message || "تعذر رفع الصورة الشخصية. يرجى المحاولة مرة أخرى.",
-    );
+    throw new Error(data.error?.message || "تعذر رفع الصورة الشخصية. يرجى المحاولة مرة أخرى.");
   }
 
   return data;
@@ -308,18 +283,13 @@ function ImageCropModal({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<CropArea | null>(
-    null,
-  );
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<CropArea | null>(null);
   const [isRound, setIsRound] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const onCropComplete = useCallback(
-    (_croppedArea: CropArea, pixels: CropArea) => {
-      setCroppedAreaPixels(pixels);
-    },
-    [],
-  );
+  const onCropComplete = useCallback((_croppedArea: CropArea, pixels: CropArea) => {
+    setCroppedAreaPixels(pixels);
+  }, []);
 
   const handleConfirm = async () => {
     if (!croppedAreaPixels) return;
@@ -333,14 +303,8 @@ function ImageCropModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      dir="rtl"
-    >
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onCancel}
-      />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onCancel} />
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -406,9 +370,7 @@ function ImageCropModal({
               style={{ direction: "ltr" }}
             />
             <ZoomIn size={15} className="text-gray-500 flex-shrink-0" />
-            <span className="text-gray-600 text-xs w-8 text-center">
-              {Math.round(zoom * 100)}%
-            </span>
+            <span className="text-gray-600 text-xs w-8 text-center">{Math.round(zoom * 100)}%</span>
           </div>
 
           {/* Rotation */}
@@ -425,9 +387,7 @@ function ImageCropModal({
               className="flex-1 h-1.5 rounded-full appearance-none bg-white/10 accent-[#C8A96A] cursor-pointer"
               style={{ direction: "ltr" }}
             />
-            <span className="text-gray-600 text-xs w-10 text-center">
-              {rotation}°
-            </span>
+            <span className="text-gray-600 text-xs w-10 text-center">{rotation}°</span>
             <button
               type="button"
               onClick={() => setRotation(0)}
@@ -462,37 +422,6 @@ function ImageCropModal({
 }
 
 // ─── Multi-select checkbox ─────────────────────────────────────
-function MultiCheck({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm transition-all duration-150 text-right w-full ${
-        checked
-          ? "bg-primary/15 border-primary/40 text-primary"
-          : "bg-white/3 border-white/8 text-gray-400 hover:border-white/20 hover:text-gray-200"
-      }`}
-    >
-      <div
-        className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-          checked ? "bg-primary border-primary" : "border-white/20"
-        }`}
-      >
-        {checked && <CheckCircle2 size={10} className="text-background" />}
-      </div>
-      <span>{label}</span>
-    </button>
-  );
-}
-
 // ─── Section wrapper ───────────────────────────────────────────
 function Section({
   title,
@@ -519,17 +448,12 @@ function Section({
 
 // ─── Input / Label helpers ─────────────────────────────────────
 const inputCls =
-  "w-full bg-zinc-900/80 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all placeholder-gray-600 font-sans";
-const labelCls = "block text-sm font-medium text-gray-400 mb-1.5";
+  "focus-gold w-full bg-black/70 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-primary/60 transition-all placeholder-gray-600 font-sans";
+const labelCls = "block text-sm font-bold text-gray-300 mb-1.5";
 const errCls = "text-red-400 text-xs mt-1 flex items-center gap-1";
+const sectionCardCls = "premium-card theatre-card p-6 sm:p-8";
 
-function FieldNote({
-  icon: Icon = Lock,
-  text,
-}: {
-  icon?: LucideIcon;
-  text: string;
-}) {
+function FieldNote({ icon: Icon = Lock, text }: { icon?: LucideIcon; text: string }) {
   return (
     <p className="flex items-center gap-1.5 text-xs text-gray-600 mt-1.5">
       <Icon size={11} className="text-gray-600 flex-shrink-0" />
@@ -545,7 +469,6 @@ export default function JoinAsArtist() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -585,17 +508,11 @@ export default function JoinAsArtist() {
   const ageRange = calcAgeRange(dateOfBirth);
 
   const toggleSpecialty = (s: string) =>
-    setSelectedSpecialties((p) =>
-      p.includes(s) ? p.filter((x) => x !== s) : [...p, s],
-    );
+    setSelectedSpecialties((p) => (p.includes(s) ? p.filter((x) => x !== s) : [...p, s]));
   const toggleWorkType = (w: string) =>
-    setSelectedWorkTypes((p) =>
-      p.includes(w) ? p.filter((x) => x !== w) : [...p, w],
-    );
+    setSelectedWorkTypes((p) => (p.includes(w) ? p.filter((x) => x !== w) : [...p, w]));
   const toggleGroup = (i: number) =>
-    setExpandedGroups((p) =>
-      p.includes(i) ? p.filter((x) => x !== i) : [...p, i],
-    );
+    setExpandedGroups((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
 
   const upload = async (selectedFile: File) => {
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -635,7 +552,8 @@ export default function JoinAsArtist() {
     setCropSrc(null);
     setUploadError(null);
     setErrors((prev) => {
-      const { image, ...rest } = prev;
+      const rest = { ...prev };
+      delete rest.image;
       return rest;
     });
     setIsUploading(false);
@@ -652,14 +570,12 @@ export default function JoinAsArtist() {
     if (!file) e.image = "الصورة الشخصية مطلوبة";
     if (!name.trim()) e.name = "الاسم الكامل مطلوب";
     if (!country.trim()) e.country = "دولة الإقامة مطلوبة";
-    if (selectedSpecialties.length === 0)
-      e.specialties = "يرجى اختيار تخصص واحد على الأقل";
+    if (selectedSpecialties.length === 0) e.specialties = "يرجى اختيار تخصص واحد على الأقل";
     if (!experience) e.experience = "سنوات الخبرة مطلوبة";
     if (!gender) e.gender = "يرجى تحديد الجنس";
     if (!dateOfBirth) e.dateOfBirth = "تاريخ الميلاد مطلوب";
     if (!phone.trim()) e.phone = "رقم الهاتف مطلوب";
-    if (phone.trim() && phone.trim().length < 7)
-      e.phone = "رقم الهاتف غير صحيح";
+    if (phone.trim() && phone.trim().length < 7) e.phone = "رقم الهاتف غير صحيح";
     if (!email.trim()) e.email = "البريد الإلكتروني مطلوب";
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       e.email = "البريد الإلكتروني غير صحيح";
@@ -728,10 +644,7 @@ Portfolio: ${portfolioLinks.trim()}
       formData.append("profileImagePublicId", uploadedImage.public_id || "");
       formData.append("profileImageAssetId", uploadedImage.asset_id || "");
       formData.append("profileImageName", file.name);
-      formData.append(
-        "profileImageBytes",
-        String(uploadedImage.bytes || file.size),
-      );
+      formData.append("profileImageBytes", String(uploadedImage.bytes || file.size));
       formData.append("profileImageFormat", uploadedImage.format || "jpg");
       formData.append(
         "imageStatus",
@@ -750,8 +663,7 @@ Portfolio: ${portfolioLinks.trim()}
         let message = "فشل الإرسال";
         try {
           const data = await res.json();
-          const formspreeError =
-            data?.errors?.[0]?.message || data?.error || data?.message;
+          const formspreeError = data?.errors?.[0]?.message || data?.error || data?.message;
           if (formspreeError) message = formspreeError;
         } catch {
           // Keep the generic message when Formspree returns a non-JSON error.
@@ -763,9 +675,7 @@ Portfolio: ${portfolioLinks.trim()}
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: unknown) {
       const message =
-        err instanceof Error
-          ? err.message
-          : "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى.";
+        err instanceof Error ? err.message : "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى.";
       toast({ variant: "destructive", title: "حدث خطأ", description: message });
     } finally {
       setIsSubmitting(false);
@@ -780,17 +690,15 @@ Portfolio: ${portfolioLinks.trim()}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-12"
+            className="premium-card p-12"
           >
             <div className="w-24 h-24 bg-primary/15 border border-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 size={48} className="text-primary" />
             </div>
-            <h2 className="font-display text-3xl font-bold text-white mb-3">
-              تم استلام طلبك
-            </h2>
+            <h2 className="font-display text-3xl font-bold text-white mb-3">تم استلام طلبك</h2>
             <p className="text-gray-400 text-base mb-2 max-w-lg mx-auto leading-relaxed">
-              شكراً للانضمام إلى كواليس. سيتم مراجعة ملفك من قِبَل فريقنا خلال
-              3–5 أيام عمل وسنخبرك بالنتيجة عبر رقم هاتفك.
+              شكراً للانضمام إلى كواليس. سيتم مراجعة ملفك من قِبَل فريقنا خلال 3–5 أيام عمل وسنخبرك
+              بالنتيجة عبر رقم هاتفك.
             </p>
             <p className="text-gray-600 text-sm mb-8">
               لن تظهر أي بياناتك الشخصية حتى تتم الموافقة ونشر ملفك.
@@ -813,17 +721,22 @@ Portfolio: ${portfolioLinks.trim()}
       {/* Crop Modal */}
       <AnimatePresence>
         {cropSrc && (
-          <ImageCropModal
-            src={cropSrc}
-            onConfirm={handleCropConfirm}
-            onCancel={handleCropCancel}
-          />
+          <ImageCropModal src={cropSrc} onConfirm={handleCropConfirm} onCancel={handleCropCancel} />
         )}
       </AnimatePresence>
 
-      <div className="pt-28 pb-24 max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="relative mx-auto max-w-5xl px-4 pb-24 pt-32 sm:px-6">
+        <div className="form-stage-backdrop" />
+        <div className="pointer-events-none absolute -right-28 top-12 h-72 w-72 rounded-full bg-primary/14 blur-3xl" />
+        <div className="pointer-events-none absolute -left-28 top-72 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-24 gold-divider opacity-60" />
         {/* Page Header */}
-        <div className="text-center mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="premium-card mb-8 p-6 text-center sm:p-8"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-5">
             <Theater size={13} />
             سجّل ملفك المهني
@@ -832,10 +745,9 @@ Portfolio: ${portfolioLinks.trim()}
             انضم إلى <span className="text-gradient-gold">كواليس</span>
           </h1>
           <p className="text-gray-400 text-base max-w-xl mx-auto leading-relaxed">
-            دليل المواهب الاحترافية للمسرح، السينما، والتلفزيون في العالم
-            العربي.
+            دليل المواهب الاحترافية للمسرح، السينما، والتلفزيون في العالم العربي.
           </p>
-        </div>
+        </motion.div>
 
         {/* Info banner */}
         <div className="mb-4 p-4 rounded-2xl bg-primary/5 border border-primary/20 flex items-center gap-3">
@@ -843,9 +755,7 @@ Portfolio: ${portfolioLinks.trim()}
             <CheckCircle2 size={16} className="text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-primary font-semibold text-sm">
-              انضمامك مجاني تمامًا
-            </p>
+            <p className="text-primary font-semibold text-sm">انضمامك مجاني تمامًا</p>
             <p className="text-gray-500 text-xs">
               بعد مراجعة طلبك سيُضاف ملفك للدليل خلال 3–5 أيام عمل
             </p>
@@ -858,12 +768,10 @@ Portfolio: ${portfolioLinks.trim()}
             <Shield size={16} className="text-primary" />
           </div>
           <div>
-            <p className="text-primary font-display font-semibold text-sm mb-1">
-              خصوصيتك تهمنا
-            </p>
+            <p className="text-primary font-display font-semibold text-sm mb-1">خصوصيتك تهمنا</p>
             <p className="text-gray-400 text-xs leading-relaxed">
-              جميع البيانات الشخصية محفوظة بشكل آمن ولن تُعرض في ملفك العام،
-              وتُستخدم فقط لإدارة طلبات التواصل عبر منصة كواليس.
+              جميع البيانات الشخصية محفوظة بشكل آمن ولن تُعرض في ملفك العام، وتُستخدم فقط لإدارة
+              طلبات التواصل عبر منصة كواليس.
             </p>
           </div>
         </div>
@@ -871,25 +779,21 @@ Portfolio: ${portfolioLinks.trim()}
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="space-y-10">
             {/* ── SECTION 1: Basic Info ── */}
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6 sm:p-8">
+            <div className={sectionCardCls}>
               <Section title="المعلومات الأساسية" icon={User}>
                 {/* Photo Upload */}
                 <div className="mb-6">
                   <label htmlFor="artist-photo" className={labelCls}>
                     الصورة الشخصية <span className="text-red-400">*</span>
                   </label>
-                  <div className="flex items-start gap-4">
+                  <div className="rounded-2xl border border-primary/15 bg-black/35 p-4 sm:flex sm:items-start sm:gap-5">
                     {/* Preview / placeholder */}
                     <div
                       onClick={() => !preview && fileInputRef.current?.click()}
-                      className={`w-24 h-24 rounded-2xl border-2 border-dashed flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer transition-colors ${preview ? "border-primary/30" : "border-white/10 hover:border-primary/30"}`}
+                      className={`mx-auto mb-4 h-32 w-32 rounded-3xl border-2 border-dashed flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer transition-all sm:mx-0 sm:mb-0 ${preview ? "border-primary/45 shadow-[0_0_40px_rgba(200,169,106,0.18)]" : "border-white/10 bg-primary/5 hover:border-primary/35 hover:bg-primary/10"}`}
                     >
                       {preview ? (
-                        <img
-                          src={preview}
-                          alt="preview"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={preview} alt="preview" className="w-full h-full object-cover" />
                       ) : (
                         <div className="flex flex-col items-center gap-1 text-gray-600">
                           <ImageIcon size={22} />
@@ -898,14 +802,14 @@ Portfolio: ${portfolioLinks.trim()}
                       )}
                     </div>
 
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1 space-y-3">
                       {/* Primary action */}
                       {!preview ? (
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white/20 text-sm transition-colors disabled:opacity-40"
+                          className="focus-gold inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary/10 border border-primary/25 text-primary hover:bg-primary/15 text-sm font-bold transition-colors disabled:opacity-40"
                         >
                           <Upload size={15} />
                           {isUploading ? "جاري التحضير..." : "اختيار صورة"}
@@ -920,7 +824,7 @@ Portfolio: ${portfolioLinks.trim()}
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white/20 text-xs transition-colors"
+                            className="focus-gold flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-primary/30 text-xs transition-colors"
                           >
                             <Crop size={12} />
                             إعادة الاقتصاص
@@ -931,10 +835,9 @@ Portfolio: ${portfolioLinks.trim()}
                             aria-label="حذف الصورة"
                             onClick={() => {
                               clearImg();
-                              if (fileInputRef.current)
-                                fileInputRef.current.value = "";
+                              if (fileInputRef.current) fileInputRef.current.value = "";
                             }}
-                            className="p-1 text-gray-600 hover:text-red-400 transition-colors"
+                            className="focus-gold p-1 text-gray-600 hover:text-red-400 transition-colors rounded-md"
                           >
                             <X size={13} />
                           </button>
@@ -946,9 +849,9 @@ Portfolio: ${portfolioLinks.trim()}
                           {uploadError || errors.image}
                         </p>
                       )}
-                      <p className="text-gray-600 text-xs">
-                        صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB).
-                        سيتم رفعها عند إرسال الطلب وتخزين رابطها.
+                      <p className="text-gray-500 text-xs leading-relaxed">
+                        صورة واضحة بخلفية بسيطة — JPG، PNG، WebP (حد أقصى 5MB). سيتم رفعها عند إرسال
+                        الطلب وتخزين رابطها.
                       </p>
                     </div>
                   </div>
@@ -1015,8 +918,7 @@ Portfolio: ${portfolioLinks.trim()}
                   </div>
                   <div>
                     <label htmlFor="artist-city" className={labelCls}>
-                      المدينة{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                      المدينة <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <input
                       id="artist-city"
@@ -1037,9 +939,7 @@ Portfolio: ${portfolioLinks.trim()}
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
                       max={
-                        new Date(
-                          new Date().setFullYear(new Date().getFullYear() - 16),
-                        )
+                        new Date(new Date().setFullYear(new Date().getFullYear() - 16))
                           .toISOString()
                           .split("T")[0]
                       }
@@ -1091,15 +991,12 @@ Portfolio: ${portfolioLinks.trim()}
             </div>
 
             {/* ── SECTION 2: Professional Info ── */}
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6 sm:p-8">
+            <div className={sectionCardCls}>
               <Section title="المعلومات الفنية" icon={Briefcase}>
                 {/* Specialties accordion */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <label
-                      htmlFor="artist-specialty-search"
-                      className={`${labelCls} mb-0`}
-                    >
+                    <label htmlFor="artist-specialty-search" className={`${labelCls} mb-0`}>
                       التخصصات المهنية <span className="text-red-400">*</span>
                     </label>
                     {selectedSpecialties.length > 0 && (
@@ -1179,8 +1076,7 @@ Portfolio: ${portfolioLinks.trim()}
                         ? group.items.filter((i) => i.includes(specialtySearch))
                         : group.items;
                       if (filtered.length === 0) return null;
-                      const isOpen =
-                        expandedGroups.includes(gi) || !!specialtySearch;
+                      const isOpen = expandedGroups.includes(gi) || !!specialtySearch;
                       const selectedInGroup = filtered.filter((i) =>
                         selectedSpecialties.includes(i),
                       ).length;
@@ -1191,18 +1087,13 @@ Portfolio: ${portfolioLinks.trim()}
                             onClick={() => toggleGroup(gi)}
                             className="w-full flex items-center gap-2.5 px-4 py-3 text-right transition-colors hover:bg-white/3"
                           >
-                            <group.icon
-                              size={13}
-                              className="text-primary/70 flex-shrink-0"
-                            />
+                            <group.icon size={13} className="text-primary/70 flex-shrink-0" />
                             <span
                               className={`flex-1 text-sm font-semibold ${isOpen ? "text-white" : "text-gray-400"}`}
                             >
                               {group.label}
                             </span>
-                            <span className="text-xs text-gray-600">
-                              {group.items.length} تخصص
-                            </span>
+                            <span className="text-xs text-gray-600">{group.items.length} تخصص</span>
                             {selectedInGroup > 0 && (
                               <span className="text-xs bg-primary/10 text-primary border border-primary/20 rounded-full px-2 py-0.5">
                                 {selectedInGroup}
@@ -1216,8 +1107,7 @@ Portfolio: ${portfolioLinks.trim()}
                           {isOpen && (
                             <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 bg-white/[0.015]">
                               {filtered.map((item) => {
-                                const checked =
-                                  selectedSpecialties.includes(item);
+                                const checked = selectedSpecialties.includes(item);
                                 return (
                                   <button
                                     key={item}
@@ -1310,8 +1200,7 @@ Portfolio: ${portfolioLinks.trim()}
                   </div>
                   <div>
                     <label htmlFor="artist-education" className={labelCls}>
-                      المؤهل التعليمي{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                      المؤهل التعليمي <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <input
                       id="artist-education"
@@ -1326,8 +1215,7 @@ Portfolio: ${portfolioLinks.trim()}
 
                 <div className="mt-5">
                   <label htmlFor="artist-bio" className={labelCls}>
-                    السيرة الفنية{" "}
-                    <span className="text-gray-600 text-xs">(اختياري)</span>
+                    السيرة الفنية <span className="text-gray-600 text-xs">(اختياري)</span>
                   </label>
                   <textarea
                     id="artist-bio"
@@ -1342,8 +1230,7 @@ Portfolio: ${portfolioLinks.trim()}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                   <div>
                     <label htmlFor="artist-works" className={labelCls}>
-                      أبرز الأعمال{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                      أبرز الأعمال <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <textarea
                       id="artist-works"
@@ -1355,12 +1242,8 @@ Portfolio: ${portfolioLinks.trim()}
                     />
                   </div>
                   <div>
-                    <label
-                      htmlFor="artist-portfolio-links"
-                      className={labelCls}
-                    >
-                      روابط البورتفوليو{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                    <label htmlFor="artist-portfolio-links" className={labelCls}>
+                      روابط البورتفوليو <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <div className="relative">
                       <textarea
@@ -1382,13 +1265,12 @@ Portfolio: ${portfolioLinks.trim()}
             </div>
 
             {/* ── SECTION 3: Skills ── */}
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6 sm:p-8">
+            <div className={sectionCardCls}>
               <Section title="المهارات" icon={Languages}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="artist-languages" className={labelCls}>
-                      اللغات{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                      اللغات <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <input
                       id="artist-languages"
@@ -1401,8 +1283,7 @@ Portfolio: ${portfolioLinks.trim()}
                   </div>
                   <div>
                     <label htmlFor="artist-dialects" className={labelCls}>
-                      اللهجات{" "}
-                      <span className="text-gray-600 text-xs">(اختياري)</span>
+                      اللهجات <span className="text-gray-600 text-xs">(اختياري)</span>
                     </label>
                     <input
                       id="artist-dialects"
@@ -1418,12 +1299,11 @@ Portfolio: ${portfolioLinks.trim()}
             </div>
 
             {/* ── SECTION 4: Contact ── */}
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6 sm:p-8">
+            <div className={sectionCardCls}>
               <Section title="بيانات التواصل" icon={Phone}>
                 <div className="mb-2 p-3 rounded-xl bg-primary/5 border border-primary/10 text-xs text-gray-500 flex items-center gap-2">
                   <Lock size={12} className="text-primary flex-shrink-0" />
-                  بيانات التواصل لن تُعرض لأي مستخدم وتُستخدم فقط لإدارة طلبات
-                  التواصل عبر المنصة.
+                  بيانات التواصل لن تُعرض لأي مستخدم وتُستخدم فقط لإدارة طلبات التواصل عبر المنصة.
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
                   <div>
@@ -1477,7 +1357,7 @@ Portfolio: ${portfolioLinks.trim()}
             </div>
 
             {/* ── SECTION 5: Legal ── */}
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6 sm:p-8">
+            <div className={sectionCardCls}>
               <Section title="الموافقة والشروط" icon={Shield}>
                 {/* Terms accordion */}
                 <div className="space-y-3 mb-6">
@@ -1486,9 +1366,7 @@ Portfolio: ${portfolioLinks.trim()}
                     onClick={() => setShowTerms(!showTerms)}
                     className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/3 border border-white/8 text-sm text-gray-300 hover:border-white/15 transition-colors"
                   >
-                    <span className="font-display font-medium">
-                      شروط الاستخدام
-                    </span>
+                    <span className="font-display font-medium">شروط الاستخدام</span>
                     <ChevronRight
                       size={16}
                       className={`text-gray-500 transition-transform ${showTerms ? "rotate-90" : ""}`}
@@ -1511,9 +1389,7 @@ Portfolio: ${portfolioLinks.trim()}
                             "يُمنع استخدام المنصة لأغراض غير قانونية أو مضللة.",
                           ].map((t, i) => (
                             <p key={i} className="flex gap-2">
-                              <span className="text-primary flex-shrink-0">
-                                •
-                              </span>
+                              <span className="text-primary flex-shrink-0">•</span>
                               {t}
                             </p>
                           ))}
@@ -1527,9 +1403,7 @@ Portfolio: ${portfolioLinks.trim()}
                     onClick={() => setShowPrivacy(!showPrivacy)}
                     className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/3 border border-white/8 text-sm text-gray-300 hover:border-white/15 transition-colors"
                   >
-                    <span className="font-display font-medium">
-                      سياسة الخصوصية
-                    </span>
+                    <span className="font-display font-medium">سياسة الخصوصية</span>
                     <ChevronRight
                       size={16}
                       className={`text-gray-500 transition-transform ${showPrivacy ? "rotate-90" : ""}`}
@@ -1552,9 +1426,7 @@ Portfolio: ${portfolioLinks.trim()}
                             "يتم استخدام البيانات بما يتوافق مع قوانين حماية الخصوصية في دولة قطر.",
                           ].map((t, i) => (
                             <p key={i} className="flex gap-2">
-                              <span className="text-primary flex-shrink-0">
-                                •
-                              </span>
+                              <span className="text-primary flex-shrink-0">•</span>
                               {t}
                             </p>
                           ))}
@@ -1578,20 +1450,15 @@ Portfolio: ${portfolioLinks.trim()}
                 >
                   <div
                     className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                      termsAccepted
-                        ? "bg-primary border-primary"
-                        : "border-white/20"
+                      termsAccepted ? "bg-primary border-primary" : "border-white/20"
                     }`}
                   >
-                    {termsAccepted && (
-                      <CheckCircle2 size={12} className="text-background" />
-                    )}
+                    {termsAccepted && <CheckCircle2 size={12} className="text-background" />}
                   </div>
                   <span className="text-sm text-gray-300 leading-relaxed">
-                    أوافق على{" "}
-                    <strong className="text-primary">شروط الاستخدام</strong> و
-                    <strong className="text-primary">سياسة الخصوصية</strong>،
-                    وأقر بأن جميع المعلومات التي أدخلتها صحيحة ودقيقة.
+                    أوافق على <strong className="text-primary">شروط الاستخدام</strong> و
+                    <strong className="text-primary">سياسة الخصوصية</strong>، وأقر بأن جميع
+                    المعلومات التي أدخلتها صحيحة ودقيقة.
                   </span>
                 </button>
                 {errors.terms && (
@@ -1604,11 +1471,11 @@ Portfolio: ${portfolioLinks.trim()}
             </div>
 
             {/* Pre-submit notice */}
-            <div className="p-4 rounded-2xl bg-zinc-900/60 border border-white/8 flex items-start gap-3 text-sm text-gray-500">
-              <Lock size={15} className="text-gray-600 flex-shrink-0 mt-0.5" />
+            <div className="rounded-2xl border border-primary/15 bg-black/55 p-4 flex items-start gap-3 text-sm text-gray-400">
+              <Lock size={15} className="text-primary flex-shrink-0 mt-0.5" />
               <p>
-                سيتم مراجعة طلبك من قِبَل فريق كواليس قبل نشره. لن يتم عرض أي
-                معلومات شخصية أو وسيلة تواصل مباشرة في الملف العام.
+                سيتم مراجعة طلبك من قِبَل فريق كواليس قبل نشره. لن يتم عرض أي معلومات شخصية أو وسيلة
+                تواصل مباشرة في الملف العام.
               </p>
             </div>
 
@@ -1616,7 +1483,7 @@ Portfolio: ${portfolioLinks.trim()}
             <button
               type="submit"
               disabled={isSubmitting || isUploading}
-              className="w-full flex items-center justify-center gap-3 py-4 bg-gradient-gold text-background font-display font-bold text-lg rounded-2xl shadow-[0_4px_24px_rgba(200,169,106,0.2)] hover:shadow-[0_8px_32px_rgba(200,169,106,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="focus-gold gold-cta w-full flex items-center justify-center gap-3 rounded-2xl py-5 font-display text-lg font-bold disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />

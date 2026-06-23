@@ -1,8 +1,16 @@
 import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
 import {
-  MapPin, Briefcase, GraduationCap, Mail, ArrowRight,
-  Award, PlayCircle, Languages, Film, ShieldCheck, Star
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Mail,
+  ArrowRight,
+  Award,
+  PlayCircle,
+  Languages,
+  Film,
+  ShieldCheck,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { artists } from "@/data/artists";
@@ -12,27 +20,20 @@ function resolveAssetUrl(url: string) {
   return `${import.meta.env.BASE_URL}${url.replace(/^\/+/, "")}`;
 }
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          size={14}
-          className={s <= Math.floor(rating) ? "text-primary fill-primary" : s - 0.5 <= rating ? "text-primary fill-primary/40" : "text-gray-600"}
-        />
-      ))}
-      <span className="text-xs text-gray-400 mr-1">{rating.toFixed(1)}</span>
-    </div>
-  );
-}
-
-function getMockRating(experience: string, featured: boolean): number {
+function _getMockRating(experience: string, featured: boolean): number {
   if (featured) return 4.9;
   const exp = experience.toLowerCase();
   if (exp.includes("خبير") || exp.includes("20") || exp.includes("15")) return 4.7;
-  if (exp.includes("محترف") || exp.includes("10") || exp.includes("8") || exp.includes("11") || exp.includes("12")) return 4.5;
-  if (exp.includes("متوسط") || exp.includes("5") || exp.includes("6") || exp.includes("7")) return 4.2;
+  if (
+    exp.includes("محترف") ||
+    exp.includes("10") ||
+    exp.includes("8") ||
+    exp.includes("11") ||
+    exp.includes("12")
+  )
+    return 4.5;
+  if (exp.includes("متوسط") || exp.includes("5") || exp.includes("6") || exp.includes("7"))
+    return 4.2;
   return 3.9;
 }
 
@@ -47,7 +48,10 @@ export default function ArtistProfile() {
         <div className="pt-40 pb-20 flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-display text-white mb-4">الفنان غير موجود</h1>
           <p className="text-gray-400 mb-8">عذراً، لم نتمكن من العثور على الملف الشخصي المطلوب.</p>
-          <Link href="/" className="px-6 py-3 bg-primary text-background font-bold rounded-lg hover:bg-primary/90">
+          <Link
+            href="/"
+            className="px-6 py-3 bg-primary text-background font-bold rounded-lg hover:bg-primary/90"
+          >
             العودة للرئيسية
           </Link>
         </div>
@@ -55,19 +59,18 @@ export default function ArtistProfile() {
     );
   }
 
-  const rating = getMockRating(artist.experience, artist.featured ?? false);
-
   return (
     <AppLayout>
       <div className="pt-24 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-primary mb-8 transition-colors group">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-primary mb-8 transition-colors group"
+        >
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           <span>العودة للدليل</span>
         </Link>
 
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-
           {/* Left Column: Image & Quick Info */}
           <div className="w-full lg:w-1/3">
             <motion.div
@@ -75,7 +78,7 @@ export default function ArtistProfile() {
               animate={{ opacity: 1, y: 0 }}
               className="sticky top-32"
             >
-              <div className="aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl relative mb-6 border border-white/10">
+              <div className="artist-card-luxe aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl relative mb-6 border border-white/10">
                 {artist.imageUrl ? (
                   <img
                     src={resolveAssetUrl(artist.imageUrl)}
@@ -84,7 +87,9 @@ export default function ArtistProfile() {
                   />
                 ) : (
                   <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
-                    <span className="text-6xl text-primary/20 font-display">{artist.name.charAt(0)}</span>
+                    <span className="text-6xl text-primary/20 font-display">
+                      {artist.name.charAt(0)}
+                    </span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -92,7 +97,7 @@ export default function ArtistProfile() {
 
               <Link
                 href={`/contact?artist=${encodeURIComponent(artist.name)}`}
-                className="w-full flex items-center justify-center gap-3 py-4 bg-gradient-gold text-background font-bold text-lg rounded-2xl shadow-[0_4px_20px_rgba(200,169,106,0.4)] hover:shadow-[0_8px_30px_rgba(200,169,106,0.6)] hover:-translate-y-1 transition-all duration-300"
+                className="focus-gold gold-cta w-full flex items-center justify-center gap-3 py-4 font-bold text-lg rounded-2xl"
               >
                 <Mail size={20} />
                 طلب تواصل
@@ -108,13 +113,20 @@ export default function ArtistProfile() {
               transition={{ delay: 0.1 }}
             >
               <div className="mb-2 flex flex-wrap items-center gap-2">
-                {artist.specialty.split(/[,،]/).map(s => s.trim()).filter(Boolean).map((spec, i) => (
-                  <span key={i} className="text-primary font-bold tracking-wider text-sm border border-primary/30 bg-primary/10 px-3 py-1 rounded-full">
-                    {spec}
-                  </span>
-                ))}
+                {artist.specialty
+                  .split(/[,،]/)
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+                  .map((spec, i) => (
+                    <span
+                      key={i}
+                      className="text-primary font-bold tracking-wider text-sm border border-primary/30 bg-primary/10 px-3 py-1 rounded-full"
+                    >
+                      {spec}
+                    </span>
+                  ))}
                 {artist.featured && (
-                  <span className="text-white font-bold text-sm border border-white/20 bg-white/10 px-3 py-1 rounded-full flex items-center gap-1">
+                  <span className="text-primary font-bold text-sm border border-primary/30 bg-primary/10 px-3 py-1 rounded-full flex items-center gap-1">
                     <Award size={14} className="text-primary" /> مميز
                   </span>
                 )}
@@ -128,21 +140,20 @@ export default function ArtistProfile() {
                 {artist.name}
               </h1>
 
-              <div className="mb-6">
-                <StarRating rating={rating} />
-              </div>
-
               {/* Quick Stats */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
-                <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col gap-2">
+                <div className="premium-card theatre-card rounded-2xl p-4 flex flex-col gap-2">
                   <MapPin className="text-primary" size={24} />
                   <div>
                     <p className="text-xs text-gray-500">الموقع</p>
-                    <p className="text-white font-medium">{artist.country}{artist.city ? `، ${artist.city}` : ""}</p>
+                    <p className="text-white font-medium">
+                      {artist.country}
+                      {artist.city ? `، ${artist.city}` : ""}
+                    </p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col gap-2">
+                <div className="premium-card theatre-card rounded-2xl p-4 flex flex-col gap-2">
                   <Briefcase className="text-primary" size={24} />
                   <div>
                     <p className="text-xs text-gray-500">الخبرة</p>
@@ -151,11 +162,13 @@ export default function ArtistProfile() {
                 </div>
 
                 {artist.education && (
-                  <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 col-span-2 md:col-span-1">
+                  <div className="premium-card theatre-card rounded-2xl p-4 flex flex-col gap-2 col-span-2 md:col-span-1">
                     <GraduationCap className="text-primary" size={24} />
                     <div>
                       <p className="text-xs text-gray-500">التعليم</p>
-                      <p className="text-white font-medium text-sm leading-snug">{artist.education}</p>
+                      <p className="text-white font-medium text-sm leading-snug">
+                        {artist.education}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -187,9 +200,18 @@ export default function ArtistProfile() {
                       <div>
                         <p className="text-xs text-gray-500 mb-1">مجالات العمل</p>
                         <div className="flex flex-wrap gap-1.5">
-                          {artist.workTypes.split(/[,،]/).map(w => w.trim()).filter(Boolean).map((w, i) => (
-                            <span key={i} className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">{w}</span>
-                          ))}
+                          {artist.workTypes
+                            .split(/[,،]/)
+                            .map((w) => w.trim())
+                            .filter(Boolean)
+                            .map((w, i) => (
+                              <span
+                                key={i}
+                                className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                              >
+                                {w}
+                              </span>
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -202,9 +224,18 @@ export default function ArtistProfile() {
                           <>
                             <p className="text-xs text-gray-500 mb-1">اللغات</p>
                             <div className="flex flex-wrap gap-1.5 mb-2">
-                              {artist.languages.split(/[,،]/).map(l => l.trim()).filter(Boolean).map((l, i) => (
-                                <span key={i} className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">{l}</span>
-                              ))}
+                              {artist.languages
+                                .split(/[,،]/)
+                                .map((l) => l.trim())
+                                .filter(Boolean)
+                                .map((l, i) => (
+                                  <span
+                                    key={i}
+                                    className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                                  >
+                                    {l}
+                                  </span>
+                                ))}
                             </div>
                           </>
                         )}
@@ -212,9 +243,18 @@ export default function ArtistProfile() {
                           <>
                             <p className="text-xs text-gray-500 mb-1">اللهجات</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {artist.dialects.split(/[,،]/).map(d => d.trim()).filter(Boolean).map((d, i) => (
-                                <span key={i} className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">{d}</span>
-                              ))}
+                              {artist.dialects
+                                .split(/[,،]/)
+                                .map((d) => d.trim())
+                                .filter(Boolean)
+                                .map((d, i) => (
+                                  <span
+                                    key={i}
+                                    className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                                  >
+                                    {d}
+                                  </span>
+                                ))}
                             </div>
                           </>
                         )}
@@ -232,7 +272,9 @@ export default function ArtistProfile() {
                     السيرة الذاتية
                   </h3>
                   <div className="text-gray-300 font-sans leading-loose text-lg space-y-3">
-                    {artist.bio.split("\n").map((p, i) => <p key={i}>{p}</p>)}
+                    {artist.bio.split("\n").map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
                   </div>
                 </div>
               )}
@@ -275,9 +317,14 @@ export default function ArtistProfile() {
                       >
                         <div className="flex items-center gap-3">
                           <PlayCircle className="text-primary" size={24} />
-                          <span className="text-white group-hover:text-primary transition-colors">مشاهدة العمل</span>
+                          <span className="text-white group-hover:text-primary transition-colors">
+                            مشاهدة العمل
+                          </span>
                         </div>
-                        <ArrowRight size={16} className="text-gray-500 group-hover:-translate-x-1 group-hover:text-primary transition-all" />
+                        <ArrowRight
+                          size={16}
+                          className="text-gray-500 group-hover:-translate-x-1 group-hover:text-primary transition-all"
+                        />
                       </a>
                     ))}
                   </div>

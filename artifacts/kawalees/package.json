@@ -6,7 +6,21 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "knip": "knip",
+    "knip:production": "knip --production",
+    "pretest:e2e": "pnpm run build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "prelhci": "pnpm run build",
+    "lhci": "lhci autorun",
+    "prelighthouse": "pnpm run build",
+    "lighthouse": "lhci autorun"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -32,13 +46,25 @@
     "wouter": "^3.9.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.3",
+    "@eslint/js": "10.0.1",
+    "@lhci/cli": "0.15.1",
+    "@playwright/test": "1.61.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@tailwindcss/vite": "^4",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4",
+    "@vitejs/plugin-react": "^6.0.2",
+    "axe-core": "4.12.1",
+    "eslint": "10.5.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.3",
+    "globals": "17.6.0",
+    "knip": "6.17.1",
+    "prettier": "3.8.4",
     "tailwindcss": "^4.2.4",
     "typescript": "^5",
-    "vite": "^5"
+    "typescript-eslint": "8.61.1",
+    "vite": "^8.0.16"
   }
 }

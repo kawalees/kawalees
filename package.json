@@ -7,16 +7,27 @@
     "build": "pnpm --filter kawalees-frontend build",
     "deploy:static": "pnpm --filter @workspace/scripts deploy-static",
     "dev": "pnpm --filter kawalees-frontend dev",
+    "format": "pnpm --filter kawalees-frontend format",
+    "format:check": "pnpm --filter kawalees-frontend format:check",
+    "knip": "pnpm --filter kawalees-frontend knip",
+    "knip:production": "pnpm --filter kawalees-frontend knip:production",
+    "lhci": "pnpm --filter kawalees-frontend lhci",
+    "lighthouse": "pnpm --filter kawalees-frontend lighthouse",
+    "lint": "pnpm --filter kawalees-frontend lint",
+    "lint:fix": "pnpm --filter kawalees-frontend lint:fix",
     "preview": "pnpm --filter kawalees-frontend preview",
+    "test:e2e": "pnpm --filter kawalees-frontend test:e2e",
+    "test:e2e:report": "pnpm --filter kawalees-frontend test:e2e:report",
+    "test:e2e:ui": "pnpm --filter kawalees-frontend test:e2e:ui",
     "typecheck": "pnpm --filter kawalees-frontend typecheck"
   },
   "private": true,
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.4",
     "typescript": "~5.9.2",
-    "vite": "^8.0.10"
+    "vite": "^8.0.16"
   },
   "dependencies": {
     "react": "^19.2.5",

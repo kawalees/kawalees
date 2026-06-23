@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Star, ShieldCheck } from "lucide-react";
+import { MapPin, ShieldCheck, Star } from "lucide-react";
 import type { Artist } from "@/types";
 
 function resolveAssetUrl(url: string) {
@@ -20,60 +20,53 @@ export function ArtistCard({
     <Link
       href={`/artist/${artist.id}`}
       aria-label={`عرض ملف ${artist.name}`}
-      className="group block h-full"
+      className="focus-gold group block h-full rounded-2xl"
     >
-      <div className="relative h-full flex flex-col bg-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(200,169,106,0.15)]">
-        {/* Image */}
+      <div className="artist-card-luxe relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_20px_70px_rgba(200,169,106,0.22)]">
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
           {artist.imageUrl ? (
             <img
               src={resolveAssetUrl(artist.imageUrl)}
               alt={artist.name}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-zinc-900">
-              <span className="text-5xl text-primary/20 font-display">
-                {artist.name.charAt(0)}
-              </span>
+            <div className="flex h-full w-full items-center justify-center bg-zinc-900">
+              <span className="font-display text-5xl text-primary/20">{artist.name.charAt(0)}</span>
             </div>
           )}
 
-          {/* Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent opacity-70" />
 
-          {/* Top badges */}
           <div className="absolute top-3 right-3 left-3 flex items-start justify-between gap-2">
             {isFeatured && (
-              <span className="bg-primary/90 text-background px-2.5 py-0.5 text-xs font-bold rounded-full flex items-center gap-1 backdrop-blur-sm">
+              <span className="flex items-center gap-1 rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-bold text-background backdrop-blur-sm">
                 <Star size={10} className="fill-background" />
                 مميز
               </span>
             )}
-            <span className="mr-auto bg-black/50 text-primary px-2 py-0.5 text-xs font-medium rounded-full flex items-center gap-1 backdrop-blur-sm border border-primary/30">
+            <span className="mr-auto flex items-center gap-1 rounded-full border border-primary/30 bg-black/50 px-2 py-0.5 text-xs font-medium text-primary backdrop-blur-sm">
               <ShieldCheck size={10} className="fill-primary/20" />
               موثّق
             </span>
           </div>
 
-          {/* Content on image */}
-          <div className="absolute bottom-0 left-0 w-full p-4 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 className="font-display font-bold text-xl text-white mb-0.5 group-hover:text-primary transition-colors leading-tight">
+          <div className="absolute bottom-0 left-0 z-10 w-full translate-y-1 p-4 transition-transform duration-300 group-hover:translate-y-0">
+            <h3 className="font-display mb-0.5 text-xl font-bold leading-tight text-white transition-colors group-hover:text-primary">
               {artist.name}
             </h3>
-            <p className="text-primary font-medium text-xs mb-2">
-              {primarySpecialty}
-            </p>
+            <p className="mb-2 text-xs font-medium text-primary">{primarySpecialty}</p>
 
-            <div className="flex items-center gap-3 text-gray-300 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
+            <div className="flex items-center gap-3 text-xs text-gray-300 opacity-0 transition-opacity delay-75 duration-300 group-hover:opacity-100">
               <span className="flex items-center gap-1">
                 <MapPin size={11} className="text-primary/70" />
                 {artist.country}
                 {artist.city ? `، ${artist.city}` : ""}
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-1 h-1 rounded-full bg-primary/70" />
+                <span className="h-1 w-1 rounded-full bg-primary/70" />
                 {artist.experience}
               </span>
             </div>
@@ -86,10 +79,10 @@ export function ArtistCard({
 
 export function ArtistCardSkeleton() {
   return (
-    <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-zinc-900 border border-white/5 animate-pulse">
+    <div className="relative aspect-[3/4] w-full animate-pulse overflow-hidden rounded-2xl border border-white/5 bg-zinc-900">
       <div className="absolute bottom-0 left-0 w-full p-5">
-        <div className="h-5 w-2/3 bg-zinc-800 rounded mb-2" />
-        <div className="h-3 w-1/3 bg-zinc-800 rounded" />
+        <div className="mb-2 h-5 w-2/3 rounded bg-zinc-800" />
+        <div className="h-3 w-1/3 rounded bg-zinc-800" />
       </div>
     </div>
   );
