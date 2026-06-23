@@ -22,7 +22,7 @@ export function ArtistCard({
       aria-label={`عرض ملف ${artist.name}`}
       className="focus-gold group block h-full rounded-2xl"
     >
-      <div className="artist-card-luxe relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_20px_70px_rgba(200,169,106,0.22)]">
+      <div className="artist-card-luxe relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card group-hover:-translate-y-1.5 group-hover:border-primary/55 group-hover:shadow-[0_24px_78px_rgba(200,169,106,0.26)]">
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
           {artist.imageUrl ? (
             <img
