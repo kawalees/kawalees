@@ -183,6 +183,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
     imageUrl:
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782254131/vc4jwaf9vo3wuxirl07q.jpg",
     specialty: "ممثل سينمائي، ممثل مسرحي، ممثل تلفزيوني، ممثل صوت ودبلجة، قصاص / راوٍ",
+    featured: true,
     country: "قطر",
     city: "الدوحة",
     experience: "1-3 سنوات",
@@ -204,6 +205,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782247248/k3rh1xf249cutmbbffma.jpg",
     specialty:
       "مونتير، مصور / كاميرامان، فني مؤثرات بصرية (VFX)، فني تلوين وتصحيح ألوان (Colorist)",
+    featured: true,
     country: "قطر",
     city: "الدوحة",
     experience: "أكثر من 10 سنوات",
@@ -237,6 +239,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782246829/reasl9ypciniotiekzih.jpg",
     specialty:
       "ممثل مسرحي، ممثل سينمائي، ممثل صوت ودبلجة، ممثل تلفزيوني، راقص / فنان رقص معاصر، ممثل كوميدي، مؤدي حركي، مخرج مسرحي، كاتب مسرحي، مؤلف موسيقي، مصمم صوت، موسيقي مباشر",
+    featured: true,
     country: "قطر",
     city: "الدوحة",
     experience: "أكثر من 10 سنوات",
@@ -294,6 +297,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
     imageUrl:
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782239984/jpwsrevrdjkgbjxbgkpa.jpg",
     specialty: "ممثل مسرحي، مخرج مسرحي، ممثل تلفزيوني، ممثل كوميدي",
+    featured: true,
     country: "قطر",
     experience: "5-10 سنوات",
     ageRange: "25–29",
@@ -315,6 +319,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
     imageUrl:
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782235104/z1bebyoe9wdg4tli6n5i.jpg",
     specialty: "ممثل تلفزيوني، ممثل مسرحي",
+    featured: true,
     country: "قطر",
     city: "الدوحة",
     experience: "3-5 سنوات",
@@ -331,6 +336,7 @@ const artistProfiles: Omit<Artist, "id">[] = [
     imageUrl:
       "https://res.cloudinary.com/dagwiscyq/image/upload/v1782235088/gwk59xjybpsvvw8bhvgb.jpg",
     specialty: "ممثل تلفزيوني، ممثل سينمائي، ممثل مسرحي",
+    featured: true,
     country: "قطر",
     city: "الدوحة",
     experience: "أكثر من 10 سنوات",
