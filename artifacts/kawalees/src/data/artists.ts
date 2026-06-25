@@ -410,6 +410,35 @@ const artistProfiles: Omit<Artist, "id">[] = [
       "مونودراما بالروج الأحمر، للمشاركة في مهرجان جرش في يوليو 2026",
     ],
   },
+  {
+    name: "خلف الله امين علي امين",
+    imageUrl:
+      "https://res.cloudinary.com/dagwiscyq/image/upload/v1782295629/r1qe0bohg0voaezzj1t0.jpg",
+    specialty: "مخرج مسرحي، مخرج تلفزيوني",
+    featured: true,
+    country: "قطر",
+    city: "الدوحة",
+    experience: "أكثر من 10 سنوات",
+    ageRange: "40–44",
+    gender: "ذكر",
+    education: "بكالريوس تربية دراما جامعة النيلين",
+    imageStatus: "تم رفع الصورة الشخصية إلى Cloudinary وإرفاق رابطها داخل الطلب",
+    profileImageName: "profile.jpg",
+    workTypes: "مسرح، تلفزيون",
+    languages: "العربية",
+    dialects: "السودانية",
+    bio: "الإخراج المسرحي والتلفزيوني",
+    works: [
+      "إخراج مسرحية روح الرواح، أفضل إخراج 2014",
+      "إخراج مسرحية تجارية سكج بكج قطر، بطولة محمد السني دفع الله",
+      "إخراج مسلسل رسالة أخيرة، بث على قناة قطر اليوم، 30 حلقة",
+    ],
+    portfolioLinks: [
+      "https://youtu.be/b_7osHI1tOI?si=U3AmFQJw8hvGW4XV",
+      "https://youtu.be/cTfG00wrgBM?si=0RiPjNxdvqXfNfhL",
+      "https://youtu.be/9yZeolA1EQs?si=oa5my_T3S5jZYXdu",
+    ],
+  },
 ];
 
 const nameCollator = new Intl.Collator("ar", { sensitivity: "base" });
