@@ -439,6 +439,26 @@ const artistProfiles: Omit<Artist, "id">[] = [
       "https://youtu.be/9yZeolA1EQs?si=oa5my_T3S5jZYXdu",
     ],
   },
+  {
+    name: "منيرة بوسالم",
+    imageUrl:
+      "https://res.cloudinary.com/dagwiscyq/image/upload/v1782590610/s1swrvdvf0pcbyndhjes.jpg",
+    specialty: "ممثل تلفزيوني، ممثل مسرحي",
+    featured: true,
+    country: "قطر",
+    city: "الدوحة",
+    experience: "1-3 سنوات",
+    ageRange: "40–44",
+    gender: "أنثى",
+    education: "ثانوية",
+    imageStatus: "تم رفع الصورة الشخصية إلى Cloudinary وإرفاق رابطها داخل الطلب",
+    profileImageName: "profile.jpg",
+    workTypes: "تلفزيون، مسرح، سينما، إعلانات",
+    languages: "العربية",
+    dialects: "الخليجية",
+    bio: "عضو في فرقة الدوحة المسرحية بتاريخ 2023",
+    works: ["مسرحية كوكب القروض", "مسلسل أيام ولكن"],
+  },
 ];
 
 const nameCollator = new Intl.Collator("ar", { sensitivity: "base" });
